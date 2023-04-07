@@ -1,51 +1,106 @@
-# python-template
+# chatgpt-cli
 
-Template for python project using poetry. abc.
+[![test](https://github.com/rcmdnk/chatgpt-cli/actions/workflows/test.yml/badge.svg)](https://github.com/rcmdnk/chatgpt-cli/actions/workflows/test.yml)
+[![test coverage](https://img.shields.io/badge/coverage-check%20here-blue.svg)](https://github.com/rcmdnk/chatgpt-cli/tree/coverage)
 
-This **README.md** will be overwritten by **setup.sh**.
+...
 
-[![test](https://github.com/rcmdnk/python-template/actions/workflows/test.yml/badge.svg)](https://github.com/rcmdnk/python-template/actions/workflows/test.yml)
-[![test coverage](https://img.shields.io/badge/coverage-check%20here-blue.svg)](https://github.com/rcmdnk/python-template/tree/coverage)
+## Requirement
 
-## Repository initialization
+- Python 3.9, 3.10, 3.11
+- Poetry (For development)
 
-Modify the repository info in **setup.sh** if necessary:
+## Installation
 
-| Value     | Explanation                                                                                                                           | Default                       |
-| :-------- | :------------------------------------------------------------------------------------------------------------------------------------ | :---------------------------- |
-| `py_ver`  | Python version. Multiple versions can be set as comma separated value like "3.10,3.9,3.8".                                            | "3.10"                        |
-| `py_main` | Main python version used by GitHub Actions.                                                                                           | The first version in `py_ver` |
-| `os`      | OS on which GitHub Actions job runs. Multiple OS can be set as comma separated value like "ubuntu-latest,macos-latest,windows-latest" | "ubuntu-latest"               |
-| `os_main` | Main OS used by GitHub Actions.                                                                                                       | The first OS in `os`          |
-| `user`    | User name in **pyproject.toml** and **LICCENSE**.                                                                                     | `git config --get user.name`  |
-| `email`   | Email address in **pyproject.toml**.                                                                                                  | `git config --get user.email` |
-| `cli`     | Set `yes` to create a template for command line interface.                                                                            | "no"                          |
+...
 
-Run `setup.sh`.
+## Usage
 
-## The repository features
+...
 
-The repository has following features:
+## Development
 
-- Environment management with [Poetry](https://python-poetry.org/).
-- Code check/lint with [pre-commit](https://pre-commit.com/).
-  - For Python
-    - [Black](https://black.readthedocs.io/en/stable/)
-    - [Flake8](https://flake8.pycqa.org/en/latest/) (actually, [pyproject-flake8](https://pypi.org/project/pyproject-flake8/) is used to read options from pyproject.toml)
-    - [isort](https://pycqa.github.io/isort/)
-    - [mypy](https://www.mypy-lang.org/)
-  - For shell script
-    - [ShellCheck](https://www.shellcheck.net/)
-  - For Markdown
-    - [mdformat](https://mdformat.readthedocs.io/en/stable/)
-  - And other small checks including YAML/JSON/TOML checks.
-  - All packages instead of **pre-commit-hooks** are managed by Poetry (**pyproject.toml**).
-  - Most of options are managed by **pyproject.toml**.
-- Tests using [pytest](https://docs.pytest.org/).
-  - [pytest-xdist](https://pytest-xdist.readthedocs.io/en/latest/) is used for the parallel test.
-- Automatic tests with [GitHub Actions](https://github.co.jp/features/actions).
-  - Generate coverage results in coverage branch (made for `py_main` and `os_main`).
-- Package version check/update with [Renovate](https://docs.renovatebot.com/).
-  - To enable renovate, you need to [install Renovate into your repository](https://docs.renovatebot.com/getting-started/installing-onboarding/).
-  - The example of the renovate.json is given in this template.
-- .gitignore for Python
+### Poetry
+
+Use [Poetry](https://python-poetry.org/) to setup environment.
+
+To install poetry, run:
+
+```
+$ pip install poetry
+```
+
+or use `pipx` (`x` is `3` or anything of your python version).
+
+Setup poetry environment:
+
+```
+$ poetry install
+```
+
+Then enter the environment:
+
+```
+$ poetry shell
+```
+
+## pre-commit
+
+To check codes at the commit, use [pre-commit](https://pre-commit.com/).
+
+`pre-commit` command will be installed in the poetry environment.
+
+First, run:
+
+```
+$ pre-commit install
+```
+
+Then `pre-commit` will be run at the commit.
+
+Sometimes, you may want to skip the check. In that case, run:
+
+```
+$ git commit --no-verify
+```
+
+You can run `pre-commit` on entire repository manually:
+
+```
+$ pre-commit run -a
+```
+
+### pytest
+
+Tests are written with [pytest](https://docs.pytest.org/).
+
+Write tests in **/tests** directory.
+
+To run tests, run:
+
+```
+$ pytest
+```
+
+The default setting runs tests in parallel with `-n auto`.
+If you run tests in serial, run:
+
+```
+$ pytest -n 0
+```
+
+## GitHub Actions
+
+If you push a repository to GitHub, GitHub Actions will run a test job
+by [GitHub Actions](https://github.co.jp/features/actions).
+
+The job runs at the Pull Request, too.
+
+It checks codes with `pre-commit` and runs tests with `pytest`.
+It also makes a test coverage report and uploads it to [the coverage branch](https://github.com/rcmdnk/chatgpt-cli/tree/coverage).
+
+You can see the test status as a badge in the README.
+
+### Renovate
+
+If you want to update dependencies automatically, [install Renovate into your repository](https://docs.renovatebot.com/getting-started/installing-onboarding/).

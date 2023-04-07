@@ -20,23 +20,27 @@ on:
         default: "ubuntu-latest"
         options:
           - "ubuntu-latest"
+
       main_py_ver:
         description: "Main python version for coverage/tmate."
         type: choice
-        default: "3.10"
+        default: "3.9"
         options:
+          - "3.9"
           - "3.10"
+          - "3.11"
+
       tmate:
         type: boolean
-        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate). This is only for main strategy and others will be stopped.'
+        description: "Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate). This is only for main strategy and others will be stopped."
         required: false
         default: false
 
 env:
-  MAIN_BRANCH: ${{ inputs.main_branch || 'main' }}
-  MAIN_OS: ${{ inputs.main_os || 'ubuntu-latest' }}
-  MAIN_PY_VER: ${{ inputs.main_py_ver || '3.10' }}
-  TMATE: ${{ inputs.tmate || 'false' }}
+  MAIN_BRANCH: ${{ inputs.main_branch || "main" }}
+  MAIN_OS: ${{ inputs.main_os || "ubuntu-latest" }}
+  MAIN_PY_VER: ${{ inputs.main_py_ver || "3.9" }}
+  TMATE: ${{ inputs.tmate || "false" }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -48,7 +52,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.10"]
+        python-version: ["3.9", "3.10", "3.11"]
     permissions:
       contents: write
     runs-on: ${{ matrix.os }}

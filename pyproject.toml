@@ -1,19 +1,20 @@
 [tool.poetry]
-name = "python-template"
+name = "chatgpt-cli"
 version = "0.0.1"
 description = ""
-authors = ["USER <EMAIL>"]
-repository = "https://github.com/rcmdnk/python-template"
-homepage = "https://github.com/rcmdnk/python-template"
+authors = ["rcmdnk <rcmdnk@gmail.com>"]
+repository = "https://github.com/rcmdnk/chatgpt-cli"
+homepage = "https://github.com/rcmdnk/chatgpt-cli"
 readme = "README.md"
 license = ""
 keywords = []
 classifiers = []
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = ">=3.9,<3.12"
 
 [tool.poetry.group.dev.dependencies]
+tomli = { version = "2.0.1", python = "<3.11"}
 pytest = "7.2.2"
 pytest-cov = "4.0.0"
 pytest-xdist = "3.2.1"
@@ -67,3 +68,6 @@ ignore_missing_imports = true
 scripts_are_modules = true
 install_types = true
 non_interactive = true
+
+[tool.poetry.scripts]
+chatgpt-cli = "chatgpt_cli:main"
