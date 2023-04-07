@@ -3,7 +3,7 @@
 [![test](https://github.com/rcmdnk/chatgpt-cli/actions/workflows/test.yml/badge.svg)](https://github.com/rcmdnk/chatgpt-cli/actions/workflows/test.yml)
 [![test coverage](https://img.shields.io/badge/coverage-check%20here-blue.svg)](https://github.com/rcmdnk/chatgpt-cli/tree/coverage)
 
-...
+Python CLI implementation for [ChatGPT](https://openai.com/blog/chatgpt).
 
 ## Requirement
 
@@ -12,11 +12,97 @@
 
 ## Installation
 
-...
+```
+$ pip install chatgpt-cli
+```
 
 ## Usage
 
-...
+### Command line interface
+
+```
+usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t TOKENS] [-r RETURN_TOKENS] subcommand [message ...]
+
+positional arguments:
+  subcommand            Subcommand to run.
+  message               Message to send to ChatGPT
+
+options:
+  -h, --help            show this help message and exit
+  -k KEY, --key KEY     OpenAI API key.
+  -c CONF, --conf CONF  Path to the configuration toml file.
+  -m MODEL, --model MODEL
+                        ChatGPT Model to use.
+  -t TOKENS, --tokens TOKENS
+                        The maximum number of tokens to generate in the chat completion. Set 0 to use the
+                        max values for the model.
+  -r RETURN_TOKENS, --return_tokens RETURN_TOKENS
+                        The reserved number of tokens for the return.
+```
+
+### Configuration file
+
+#### File path
+
+The default path to the configuration file is **$XDG_CONFIG_HOME/cg/config.toml**.
+
+If **$XDG_CONFIG_HOME** is not defined, use **~/.config/cg/config.toml**.
+
+If it does not exist and **~/.cg/config.toml** or **~/.cg.toml** exists,
+the existing file is used.
+
+You can change the path by `-c <file>` (`--conf <file>`) option.
+
+#### How to write the configuration file
+
+The configuration file is written in the TOML format.
+
+Subcommand is defined as the top table name.
+
+The options for each table can be:
+
+- `description`: Description of the command.
+- `model`: The model to use. (default: "gpt-3.5-turbo")
+- `max_tokens`: The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model. (default: 0)
+- `temperature`: Sampling temperature (0 ~ 2). (default: 1)
+- `top_p`: Probability (0 ~ 1) that the model will consider the top_p tokens. Do not set both temperature and top_p in the same time. (default: 1)
+- `presence_penalty`: The penalty for the model to return the same token (-2 ~ 2). (default: 0)
+- `frequency_penalty`: The penalty for the model to return the same token multiple times (-2 ~ 2). (default: 0)
+- List of `messages`: Dictionary of message, which must have `role` ('system', 'user' or 'assistant') and `content`. You can optionally give `name`.
+
+```
+[test_cmd]
+description = "Example command to test the OpenAI API."
+
+[[test_cmd.messages]]
+role = "system"
+content = "You are a helpful assistant."
+[[test_cmd.messages]]
+role = "user"
+content = "Who won the world series in 2020?"
+[[test_cmd.messages]]
+role = "assistant"
+"content" = "The Los Angeles Dodgers won the World Series in 2020."
+[[test_cmd.messages]]
+role = "user"
+content = "Where was it played?"
+
+[shell]
+description = "Ask a shell scripting question."
+[[shell.messages]]
+role = "user"
+content = "You are an expert of the shell scripting. Answer the following questions."
+
+[py]
+description = "Ask a python programming question."
+[[py.messages]]
+role = "user"
+content = "You are an expert python programmer. Answer the following questions."
+```
+
+These messages will be sent as an prompt before your input message.
+
+You can give full questions and use `cg` w/o input messages like a first example `test_cmd`.
 
 ## Development
 

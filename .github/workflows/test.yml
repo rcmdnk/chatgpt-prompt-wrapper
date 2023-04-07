@@ -37,10 +37,10 @@ on:
         default: false
 
 env:
-  MAIN_BRANCH: ${{ inputs.main_branch || "main" }}
-  MAIN_OS: ${{ inputs.main_os || "ubuntu-latest" }}
-  MAIN_PY_VER: ${{ inputs.main_py_ver || "3.9" }}
-  TMATE: ${{ inputs.tmate || "false" }}
+  MAIN_BRANCH: ${{ inputs.main_branch || 'main' }}
+  MAIN_OS: ${{ inputs.main_os || 'ubuntu-latest' }}
+  MAIN_PY_VER: ${{ inputs.main_py_ver || '3.9' }}
+  TMATE: ${{ inputs.tmate || 'false' }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
