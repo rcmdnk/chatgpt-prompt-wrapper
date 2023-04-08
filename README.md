@@ -21,23 +21,40 @@ $ pip install chatgpt-prompt-wrapper
 ### Command line interface
 
 ```
-usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t TOKENS] [-r RETURN_TOKENS] subcommand [message ...]
+$ cg help
+usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t TOKENS] [--show] [--hide] [--show_cost]
+          subcommand [message ...]
 
 positional arguments:
-  subcommand            Subcommand to run.
+  subcommand            Subcommand to run. Use 'list' subcommand to list up available subcommands.
   message               Message to send to ChatGPT
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
   -k KEY, --key KEY     OpenAI API key.
   -c CONF, --conf CONF  Path to the configuration toml file.
   -m MODEL, --model MODEL
                         ChatGPT Model to use.
   -t TOKENS, --tokens TOKENS
-                        The maximum number of tokens to generate in the chat completion. Set 0 to use the
-                        max values for the model.
-  -r RETURN_TOKENS, --return_tokens RETURN_TOKENS
-                        The reserved number of tokens for the return.
+                        The maximum number of tokens to generate in the chat completion. Set 0 to use
+                        the max values for the model minus prompt tokens.
+  --show                Show prompt.
+  --hide                Hide prompt.
+  --show_cost           Show cost used.
+```
+
+```
+$ cg list
+Available subcommands:
+  Reserved commands:
+    init      : Initialize config file with an example command.
+    cost      : Show estimated cost used until now.
+    list      : List up subcommands (show this).
+    version   : Show version.
+    help      : Show help.
+  User commands:
+    test      : Example command to test the OpenAI API.
+    ...
 ```
 
 ### Configuration file
@@ -48,7 +65,7 @@ The default path to the configuration file is **$XDG_CONFIG_HOME/cg/config.toml*
 
 If **$XDG_CONFIG_HOME** is not defined, use **~/.config/cg/config.toml**.
 
-If it does not exist and **~/.cg/config.toml** or **~/.cg.toml** exists,
+If it does not exist and **~/.cg/config.toml** exists,
 the existing file is used.
 
 You can change the path by `-c <file>` (`--conf <file>`) option.
@@ -62,34 +79,44 @@ Subcommand is defined as the top table name.
 The options for each table can be:
 
 - `description`: Description of the command.
+- `chat`: Set `true` to make the command chat mode.
+- `show`: Set `true` to show prompt for non chat command.
+- `hide`: Set `true` to hide prompt for non chat command.
+- `show_cost`: Set `true` to show cost at the end of the command.
 - `model`: The model to use. (default: "gpt-3.5-turbo")
 - `max_tokens`: The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model. (default: 0)
 - `temperature`: Sampling temperature (0 ~ 2). (default: 1)
 - `top_p`: Probability (0 ~ 1) that the model will consider the top_p tokens. Do not set both temperature and top_p in the same time. (default: 1)
 - `presence_penalty`: The penalty for the model to return the same token (-2 ~ 2). (default: 0)
 - `frequency_penalty`: The penalty for the model to return the same token multiple times (-2 ~ 2). (default: 0)
-- List of `messages`: Dictionary of message, which must have `role` ('system', 'user' or 'assistant') and `content`. You can optionally give `name`.
+- List of `messages`: Dictionary of message, which must have `role` ('system', 'user' or 'assistant') and `content` (message text).
 
-```
-[test_cmd]
+Here is a example configuration (if you execute `cg init` at the first time, this configuration file is created).
+
+```toml
+[test]
+# Example command to test the OpenAI API, taken from below.
+# [Chat completion - OpenAI API](https://platform.openai.com/docs/guides/chat/introduction)
+
 description = "Example command to test the OpenAI API."
+show = true
 
-[[test_cmd.messages]]
+[[test.messages]]
 role = "system"
 content = "You are a helpful assistant."
-[[test_cmd.messages]]
+[[test.messages]]
 role = "user"
 content = "Who won the world series in 2020?"
-[[test_cmd.messages]]
+[[test.messages]]
 role = "assistant"
 "content" = "The Los Angeles Dodgers won the World Series in 2020."
-[[test_cmd.messages]]
+[[test.messages]]
 role = "user"
 content = "Where was it played?"
 
-[shell]
+[sh]
 description = "Ask a shell scripting question."
-[[shell.messages]]
+[[sh.messages]]
 role = "user"
 content = "You are an expert of the shell scripting. Answer the following questions."
 
@@ -98,11 +125,20 @@ description = "Ask a python programming question."
 [[py.messages]]
 role = "user"
 content = "You are an expert python programmer. Answer the following questions."
+
+[chat]
+description = "Chat with the assistant."
+chat = true
+[[chat.messages]]
+role = "user"
+content = "Let's enjoy a chat."
 ```
 
 These messages will be sent as an prompt before your input message.
 
-You can give full questions and use `cg` w/o input messages like a first example `test_cmd`.
+You can give full questions and use `cg` w/o input messages like a first example `test` command.
+
+#### test
 
 ## Development
 

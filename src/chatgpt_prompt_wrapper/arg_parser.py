@@ -2,13 +2,23 @@ import os
 import sys
 from argparse import ArgumentParser, Namespace
 
-non_chatgpt_params = ["subcommand", "message", "conf", "key"]
+non_chatgpt_params = [
+    "subcommand",
+    "message",
+    "conf",
+    "show",
+    "hide",
+    "show_cost",
+]
 
 
 def get_arg_parser() -> ArgumentParser:
     arg_parser = ArgumentParser()
     arg_parser.add_argument(
-        "subcommand", help="Subcommand to run.", type=str, nargs=1
+        "subcommand",
+        help="Subcommand to run. Use 'list' subcommand to list up available subcommands.",
+        type=str,
+        nargs=1,
     )
     arg_parser.add_argument(
         "message", help="Message to send to ChatGPT", type=str, nargs="*"
@@ -32,30 +42,50 @@ def get_arg_parser() -> ArgumentParser:
         help="The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model minus prompt tokens.",
         type=int,
     )
+    arg_parser.add_argument(
+        "--show",
+        help="Show prompt.",
+        action="store_true",
+    )
+    arg_parser.add_argument(
+        "--hide",
+        help="Hide prompt.",
+        action="store_true",
+    )
+    arg_parser.add_argument(
+        "--show_cost",
+        help="Show cost used.",
+        action="store_true",
+    )
     return arg_parser
 
 
 def parse_arg() -> Namespace:
+    arg_parser = get_arg_parser()
+    optional_strings = {}
+    for action in arg_parser._actions:
+        for s in action.option_strings:
+            optional_strings[s] = action.nargs
+
     positional = []
     option = []
-    is_option = False
+    is_option = 0
     is_positional = False
     for arg in sys.argv[1:]:
         if is_positional:
             positional.append(arg)
         elif is_option:
             option.append(arg)
-            is_option = False
+            is_option -= 1
         elif arg == "--":
             is_positional = True
-        elif arg.startswith("-"):
+        elif arg in optional_strings:
             option.append(arg)
-            is_option = True
+            is_option = optional_strings[arg]
         else:
             positional.append(arg)
     subcommand = [positional[0]] if positional else []
     message = [" ".join(positional[1:])] if len(positional) > 1 else []
-    arg_parser = get_arg_parser()
     args = arg_parser.parse_args(subcommand + message + option)
     return args
 
