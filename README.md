@@ -138,7 +138,24 @@ These messages will be sent as an prompt before your input message.
 
 You can give full questions and use `cg` w/o input messages like a first example `test` command.
 
-#### test
+Command examples:
+
+* test
+
+![test command](https://raw.githubusercontent.com/rcmdnk/chatgpt-prompt-wrapper/main/fig/cg_test.png)
+
+* sh
+
+![sh command](https://raw.githubusercontent.com/rcmdnk/chatgpt-prompt-wrapper/main/fig/cg_sh.png)
+
+* py
+
+![py command](https://raw.githubusercontent.com/rcmdnk/chatgpt-prompt-wrapper/main/fig/cg_py.png)
+
+* caht
+
+![chat command](https://raw.githubusercontent.com/rcmdnk/chatgpt-prompt-wrapper/main/fig/cg_chat.gif)
+
 
 ## Development
 
