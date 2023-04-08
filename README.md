@@ -1,7 +1,7 @@
-# chatgpt-cli
+# chatgpt-prompt-wrapper
 
-[![test](https://github.com/rcmdnk/chatgpt-cli/actions/workflows/test.yml/badge.svg)](https://github.com/rcmdnk/chatgpt-cli/actions/workflows/test.yml)
-[![test coverage](https://img.shields.io/badge/coverage-check%20here-blue.svg)](https://github.com/rcmdnk/chatgpt-cli/tree/coverage)
+[![test](https://github.com/rcmdnk/chatgpt-prompt-wrapper/actions/workflows/test.yml/badge.svg)](https://github.com/rcmdnk/chatgpt-prompt-wrapper/actions/workflows/test.yml)
+[![test coverage](https://img.shields.io/badge/coverage-check%20here-blue.svg)](https://github.com/rcmdnk/chatgpt-prompt-wrapper/tree/coverage)
 
 Python CLI implementation for [ChatGPT](https://openai.com/blog/chatgpt).
 
@@ -13,7 +13,7 @@ Python CLI implementation for [ChatGPT](https://openai.com/blog/chatgpt).
 ## Installation
 
 ```
-$ pip install chatgpt-cli
+$ pip install chatgpt-prompt-wrapper
 ```
 
 ## Usage
@@ -183,7 +183,7 @@ by [GitHub Actions](https://github.co.jp/features/actions).
 The job runs at the Pull Request, too.
 
 It checks codes with `pre-commit` and runs tests with `pytest`.
-It also makes a test coverage report and uploads it to [the coverage branch](https://github.com/rcmdnk/chatgpt-cli/tree/coverage).
+It also makes a test coverage report and uploads it to [the coverage branch](https://github.com/rcmdnk/chatgpt-prompt-wrapper/tree/coverage).
 
 You can see the test status as a badge in the README.
 

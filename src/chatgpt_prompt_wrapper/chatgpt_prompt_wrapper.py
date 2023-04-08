@@ -5,7 +5,7 @@ from typing import Any
 from .__version__ import __version__
 from .arg_parser import cli_help, non_chatgpt_params, parse_arg
 from .chatgpt import ChatGPT, Messages
-from .chatgpt_cli_exception import ChatGPTCliError
+from .chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
 from .config import get_config
 from .init_cmd import init
 from .log_formatter import get_logger
@@ -46,7 +46,7 @@ def check_args(
     return chatgpt_params, config["messages"]
 
 
-def cg() -> None:
+def chatgpt_prompt_wrapper() -> None:
     args = parse_arg()
     cmd = args.subcommand[0]
 
@@ -66,12 +66,14 @@ def cg() -> None:
         return
 
     if not args.key:
-        raise ChatGPTCliError(
+        raise ChatGPTPromptWrapperError(
             "Set OPEN_AI_API_KEY environment variable or give it by -k (--key) argument."
         )
 
     if not config_file.is_file():
-        raise ChatGPTCliError(f"Config file {config_file} does not exist")
+        raise ChatGPTPromptWrapperError(
+            f"Config file {config_file} does not exist"
+        )
     with open(config_file, "rb") as f:
         config = tomllib.load(f)
 
@@ -90,7 +92,7 @@ def cg() -> None:
         return
 
     if cmd not in config:
-        raise ChatGPTCliError(f"Subcommand: {cmd} is not defined.")
+        raise ChatGPTPromptWrapperError(f"Subcommand: {cmd} is not defined.")
 
     cmd_config = config[cmd]
     chatgpt_params, messages = check_args(cmd_config, args)
@@ -102,8 +104,8 @@ def cg() -> None:
 
 def main() -> int:
     try:
-        cg()
+        chatgpt_prompt_wrapper()
         return 0
-    except ChatGPTCliError as e:
+    except ChatGPTPromptWrapperError as e:
         log.error(e)
         return 1

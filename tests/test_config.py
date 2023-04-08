@@ -1,4 +1,4 @@
-from chatgpt_cli.config import get_config
+from chatgpt_prompt_wrapper.config import get_config
 
 try:
     import tomllib

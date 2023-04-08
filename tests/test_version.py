@@ -5,7 +5,7 @@ try:
 except ModuleNotFoundError:
     import tomli as tomllib
 
-from chatgpt_cli import __version__
+from chatgpt_prompt_wrapper import __version__
 
 
 def test_version():

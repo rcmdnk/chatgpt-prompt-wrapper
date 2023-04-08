@@ -1,6 +1,6 @@
 import pytest
 
-from chatgpt_cli.config import example_config
+from chatgpt_prompt_wrapper.config import example_config
 
 
 @pytest.fixture(autouse=False)

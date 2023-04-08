@@ -1,4 +1,4 @@
-from chatgpt_cli.arg_parser import cli_help, parse_arg
+from chatgpt_prompt_wrapper.arg_parser import cli_help, parse_arg
 
 
 def test_parse_arg(monkeypatch):

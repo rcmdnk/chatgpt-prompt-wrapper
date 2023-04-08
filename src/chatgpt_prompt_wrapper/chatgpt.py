@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import openai
 import tiktoken
 
-from .chatgpt_cli_exception import ChatGPTCliError
+from .chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
 
 Messages = list[dict[str, str]]
 
@@ -34,7 +34,7 @@ def num_tokens_from_messages(
         tokens_per_message = 3
         tokens_per_name = 1
     else:
-        raise ChatGPTCliError(f"Model: {model} is not supported.")
+        raise ChatGPTPromptWrapperError(f"Model: {model} is not supported.")
     num_tokens = 0
     for message in messages:
         num_tokens += tokens_per_message
@@ -83,7 +83,7 @@ class ChatGPT:
     def get_max_tokens(self, messages: Messages) -> int:
         prompt_tokens = num_tokens_from_messages(messages, self.model)
         if prompt_tokens >= model_max_tokens[self.model]:
-            raise ChatGPTCliError(
+            raise ChatGPTPromptWrapperError(
                 f"Too much tokens: prompt tokens ({prompt_tokens}) >= model's max tokens ({model_max_tokens[self.model]})."
             )
 
@@ -144,7 +144,7 @@ class ChatGPT:
         elif finish_reason is None:
             self.log.warning("API response still in progress or incomplete")
         else:
-            raise ChatGPTCliError(
+            raise ChatGPTPromptWrapperError(
                 f"Unknown finish_reason: {response['choices'][0]['finish_reason']}"
             )
         return response["choices"][0]["message"]["content"]
