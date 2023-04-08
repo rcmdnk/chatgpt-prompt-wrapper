@@ -26,7 +26,7 @@ usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t TOKENS] [--show] [--hide] [--sh
           subcommand [message ...]
 
 positional arguments:
-  subcommand            Subcommand to run. Use 'list' subcommand to list up available subcommands.
+  subcommand            Subcommand to run. Use 'commands subcommand to list up available subcommands.
   message               Message to send to ChatGPT
 
 optional arguments:
@@ -44,12 +44,12 @@ optional arguments:
 ```
 
 ```
-$ cg list
+$ cg commands
 Available subcommands:
   Reserved commands:
     init      : Initialize config file with an example command.
     cost      : Show estimated cost used until now.
-    list      : List up subcommands (show this).
+    commands  : List up subcommands (show this).
     version   : Show version.
     help      : Show help.
   User commands:
@@ -140,22 +140,21 @@ You can give full questions and use `cg` w/o input messages like a first example
 
 Command examples:
 
-* test
+- test
 
 ![test command](https://raw.githubusercontent.com/rcmdnk/chatgpt-prompt-wrapper/main/fig/cg_test.png)
 
-* sh
+- sh
 
 ![sh command](https://raw.githubusercontent.com/rcmdnk/chatgpt-prompt-wrapper/main/fig/cg_sh.png)
 
-* py
+- py
 
 ![py command](https://raw.githubusercontent.com/rcmdnk/chatgpt-prompt-wrapper/main/fig/cg_py.png)
 
-* caht
+- caht
 
 ![chat command](https://raw.githubusercontent.com/rcmdnk/chatgpt-prompt-wrapper/main/fig/cg_chat.gif)
-
 
 ## Development
 

@@ -16,7 +16,7 @@ def get_arg_parser() -> ArgumentParser:
     arg_parser = ArgumentParser()
     arg_parser.add_argument(
         "subcommand",
-        help="Subcommand to run. Use 'list' subcommand to list up available subcommands.",
+        help="Subcommand to run. Use 'commands' subcommand to list up available subcommands.",
         type=str,
         nargs=1,
     )
@@ -62,10 +62,13 @@ def get_arg_parser() -> ArgumentParser:
 
 def parse_arg() -> Namespace:
     arg_parser = get_arg_parser()
-    optional_strings = {}
+    optional_strings: dict[str, int] = {}
     for action in arg_parser._actions:
         for s in action.option_strings:
-            optional_strings[s] = action.nargs
+            if isinstance(action.nargs, int):
+                optional_strings[s] = action.nargs
+            elif action.nargs is None:
+                optional_strings[s] = 1
 
     positional = []
     option = []

@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from .chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
-from .config import example_config
+from ..chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
+from ..config import example_config
 
 
 def init(config_file: Path) -> None:

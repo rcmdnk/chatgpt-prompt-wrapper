@@ -8,8 +8,8 @@ from .__version__ import __version__
 from .arg_parser import cli_help, non_chatgpt_params, parse_arg
 from .chatgpt import ChatGPT, Messages
 from .chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
+from .cmd import commands, cost, init
 from .config import get_config
-from .init_cmd import init
 from .log_formatter import get_logger
 
 try:
@@ -21,15 +21,16 @@ except ModuleNotFoundError:
 log = get_logger(__name__.split(".")[0])
 
 
-def check_args(
-    config: dict[str, Any], args: Namespace
-) -> tuple[dict[str, Any], Messages, bool, bool]:
+def set_config_messages(config: dict[str, Any], args: Namespace) -> None:
     if "messages" not in config:
         config["messages"] = []
     if args.message:
         config["messages"].append(
             {"role": "user", "content": " ".join(args.message)}
         )
+
+
+def set_config_show(config: dict[str, Any], args: Namespace) -> None:
     if "show" in config:
         pass
     elif "hide" in config:
@@ -39,11 +40,21 @@ def check_args(
     elif args.hide:
         config["show"] = False
 
+
+def get_show_cost(config: dict[str, Any], args: Namespace) -> bool:
     show_cost = False
     show_cost = config["show_cost"] if "show_cost" in config else False
     if args.show_cost:
         show_cost = True
+    return show_cost
 
+
+def check_args(
+    config: dict[str, Any], args: Namespace
+) -> tuple[dict[str, Any], Messages, bool, bool]:
+    set_config_messages(config, args)
+    set_config_show(config, args)
+    show_cost = get_show_cost(config, args)
     chat = config["chat"] if "chat" in config else False
 
     for arg in vars(args):
@@ -58,6 +69,21 @@ def check_args(
         if k not in ["messages", "description", "hide", "chat", "show_cost"]
     }
     return chatgpt_params, config["messages"], chat, show_cost
+
+
+def update_cost(
+    cost_file: Path, new_cost: float, show_cost: bool = False
+) -> None:
+    if show_cost:
+        log.info(f"\nEstimated cost: ${new_cost:.6f}")
+    cost_data = {}
+    if cost_file.exists():
+        with open(cost_file, "r") as f:
+            cost_data = {k: v for k, v in sorted(json.load(f).items())}
+    month = datetime.now().strftime("%Y%m")
+    cost_data[month] = cost_data.get(month, 0) + new_cost
+    with open(cost_file, "w") as f:
+        json.dump(cost_data, f)
 
 
 def chatgpt_prompt_wrapper() -> None:
@@ -75,21 +101,14 @@ def chatgpt_prompt_wrapper() -> None:
     config_file = (
         Path(args.conf) if args.conf else get_config("cg", "config.toml")
     )
-    cost = get_config("cg", "cost.json")
+    cost_file = get_config("cg", "cost.json")
 
     if cmd == "init":
         init(config_file)
         log.info(f"Created config file at {config_file}.")
         return
     if cmd == "cost":
-        if not cost.exists():
-            log.info("No cost data.")
-            return
-        with open(cost, "r") as f:
-            cost_data = json.load(f)
-        log.info("Month, EstimatedCost(USD)")
-        for k, v in cost_data.items():
-            log.info(f"{k}, {v:.6f}")
+        cost(cost_file, log)
         return
 
     if not args.key:
@@ -104,19 +123,8 @@ def chatgpt_prompt_wrapper() -> None:
     with open(config_file, "rb") as f:
         config = tomllib.load(f)
 
-    if cmd == "list":
-        log.info("Available subcommands:")
-        log.info("  Reserved commands:")
-        log.info(
-            f"    {'init':<10s}: Initialize config file with an example command."
-        )
-        log.info(f"    {'cost':<10s}: Show estimated cost used until now.")
-        log.info(f"    {'list':<10s}: List up subcommands (show this).")
-        log.info(f"    {'version':<10s}: Show version.")
-        log.info(f"    {'help':<10s}: Show help.")
-        log.info("  User commands:")
-        for cmd in config:
-            log.info(f"    {cmd:<10s}: {config[cmd].get('description', '')}")
+    if cmd == "commands":
+        commands(config, log)
         return
 
     if cmd not in config:
@@ -130,17 +138,8 @@ def chatgpt_prompt_wrapper() -> None:
         cost_data_this = cg.ask(messages)
     else:
         cost_data_this = cg.chat(messages)
-    if show_cost:
-        log.info(f"\nEstimated cost: ${cost_data_this:.6f}")
 
-    cost_data = {}
-    if cost.exists():
-        with open(cost, "r") as f:
-            cost_data = {k: v for k, v in sorted(json.load(f).items())}
-    month = datetime.now().strftime("%Y%m")
-    cost_data[month] = cost_data.get(month, 0) + cost_data_this
-    with open(cost, "w") as f:
-        json.dump(cost_data, f)
+    update_cost(cost_file, cost_data_this, show_cost)
 
 
 def main() -> int:

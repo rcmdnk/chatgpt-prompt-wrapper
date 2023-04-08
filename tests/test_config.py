@@ -7,11 +7,11 @@ except ModuleNotFoundError:
 
 
 def test_get_config(conf_file):
-    assert conf_file == get_config("cg")
+    assert conf_file == get_config("cg", "config.toml")
 
 
 def test_example_config(conf_file):
     with open(conf_file, "rb") as f:
         conf = tomllib.load(f)
-    assert "test_cmd" in conf
-    assert len(conf["test_cmd"]["messages"]) == 4
+    assert "test" in conf
+    assert len(conf["test"]["messages"]) == 4
