@@ -34,6 +34,8 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         The penalty for the model to return the same token (-2 ~ 2).
     frequency_penalty: float
         The penalty for the model to return the same token multiple times (-2 ~ 2).
+    colors: dict[str, str]
+        The colors to use for the different roles.
     """
 
     key: str
@@ -43,11 +45,11 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
     top_p: float = 1
     presence_penalty: float = 0
     frequency_penalty: float = 0
-    colors: dict[str, int] = field(
+    colors: dict[str, str] = field(
         default_factory=lambda: {
-            "system": 34,
-            "user": 32,
-            "assistant": 36,
+            "system": "blue",
+            "user": "green",
+            "assistant": "cyan",
         }
     )
 
@@ -56,6 +58,17 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         openai.api_key = self.key
 
         self.prepare_tokens_checker()
+
+        self.ansi_colors = {
+            "black": "30",
+            "red": "31",
+            "green": "32",
+            "yellow": "33",
+            "blue": "34",
+            "purple": "35",
+            "cyan": "36",
+            "gray": "37",
+        }
 
         # Ref: https://platform.openai.com/docs/models/overview
         self.model_max_tokens = {
@@ -101,8 +114,12 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         self.reply_tokens = 3
 
     def add_color(self, text: str, role: str, size: int = 0) -> str:
-        if sys.stdout.isatty() and role in self.colors:
-            text = f"\033[{self.colors[role]};1m{role:>{size}}\033[m"
+        if (
+            sys.stdout.isatty()
+            and role in self.colors
+            and self.colors[role] in self.ansi_colors
+        ):
+            text = f"\033[{self.ansi_colors[self.colors[role]]};1m{text:>{size}}\033[m"
         return text
 
     def check_prompt_tokens(self, prompt_tokens: int) -> None:

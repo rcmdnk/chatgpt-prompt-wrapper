@@ -22,11 +22,12 @@ $ pip install chatgpt-prompt-wrapper
 
 ```
 $ cg help
-usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t TOKENS] [--show] [--hide] [--show_cost]
+usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t TOKENS] [--show] [--hide] [--multiline]
+          [--no_multiline] [--show_cost]
           subcommand [message ...]
 
 positional arguments:
-  subcommand            Subcommand to run. Use 'commands subcommand to list up available subcommands.
+  subcommand            Subcommand to run. Use 'commands' subcommand to list up available subcommands.
   message               Message to send to ChatGPT
 
 optional arguments:
@@ -38,9 +39,12 @@ optional arguments:
   -t TOKENS, --tokens TOKENS
                         The maximum number of tokens to generate in the chat completion. Set 0 to use
                         the max values for the model minus prompt tokens.
-  --show                Show prompt.
-  --hide                Hide prompt.
+  --show                Show prompt for ask command.
+  --hide                Hide prompt for ask command.
+  --multiline           Use multiline input for chat command.
+  --no_multiline        Use single line input for chat command.
   --show_cost           Show cost used.
+
 ```
 
 ```
@@ -79,9 +83,7 @@ Subcommand is defined as the top table name.
 The options for each table can be:
 
 - `description`: Description of the command.
-- `chat`: Set `true` to make the command chat mode.
-- `show`: Set `true` to show prompt for non chat command.
-- `hide`: Set `true` to hide prompt for non chat command.
+- `chat`: Set `true` to make the command chat mode (default is ask mode, only one exchange).
 - `show_cost`: Set `true` to show cost at the end of the command.
 - `model`: The model to use. (default: "gpt-3.5-turbo")
 - `max_tokens`: The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model. (default: 0)
@@ -90,6 +92,16 @@ The options for each table can be:
 - `presence_penalty`: The penalty for the model to return the same token (-2 ~ 2). (default: 0)
 - `frequency_penalty`: The penalty for the model to return the same token multiple times (-2 ~ 2). (default: 0)
 - List of `messages`: Dictionary of message, which must have `role` ('system', 'user' or 'assistant') and `content` (message text).
+
+The options for ask mode:
+
+- `show`: Set `true` to show prompt for non chat command.
+- `hide`: Set `true` to hide prompt for non chat command (default).
+
+The options for chat mode:
+
+- `multiline`: Set `true` to hide prompt for non chat command (default).
+- `no_multiline`: Set `true` to hide prompt for non chat command.
 
 Here is a example configuration (if you execute `cg init` at the first time, this configuration file is created).
 

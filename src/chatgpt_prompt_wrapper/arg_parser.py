@@ -8,6 +8,8 @@ non_chatgpt_params = [
     "conf",
     "show",
     "hide",
+    "multiline",
+    "no_multiline",
     "show_cost",
 ]
 
@@ -44,12 +46,22 @@ def get_arg_parser() -> ArgumentParser:
     )
     arg_parser.add_argument(
         "--show",
-        help="Show prompt.",
+        help="Show prompt for ask command.",
         action="store_true",
     )
     arg_parser.add_argument(
         "--hide",
-        help="Hide prompt.",
+        help="Hide prompt for ask command.",
+        action="store_true",
+    )
+    arg_parser.add_argument(
+        "--multiline",
+        help="Use multiline input for chat command.",
+        action="store_true",
+    )
+    arg_parser.add_argument(
+        "--no_multiline",
+        help="Use single line input for chat command.",
         action="store_true",
     )
     arg_parser.add_argument(

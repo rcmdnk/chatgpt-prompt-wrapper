@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import inspect
 import json
 from argparse import Namespace
 from datetime import datetime
@@ -41,6 +44,17 @@ def set_config_show(config: dict[str, Any], args: Namespace) -> None:
         config["show"] = False
 
 
+def set_config_multiline(config: dict[str, Any], args: Namespace) -> None:
+    if "multiline" in config:
+        pass
+    elif "no_multiline" in config:
+        config["multiline"] = not config["no_multiline"]
+    if args.multiline:
+        config["multiline"] = True
+    elif args.no_multiline:
+        config["multiline"] = False
+
+
 def get_show_cost(config: dict[str, Any], args: Namespace) -> bool:
     show_cost = False
     show_cost = config["show_cost"] if "show_cost" in config else False
@@ -54,6 +68,7 @@ def check_args(
 ) -> tuple[dict[str, Any], Messages, bool, bool]:
     set_config_messages(config, args)
     set_config_show(config, args)
+    set_config_multiline(config, args)
     show_cost = get_show_cost(config, args)
     chat = config["chat"] if "chat" in config else False
 
@@ -66,7 +81,15 @@ def check_args(
     chatgpt_params = {
         k: v
         for k, v in config.items()
-        if k not in ["messages", "description", "hide", "chat", "show_cost"]
+        if k
+        not in [
+            "messages",
+            "description",
+            "hide",
+            "chat",
+            "no_multi",
+            "show_cost",
+        ]
     }
     return chatgpt_params, config["messages"], chat, show_cost
 
@@ -86,17 +109,13 @@ def update_cost(
         json.dump(cost_data, f)
 
 
-def run_api(messages: Messages, params: dict[str, Any], chat: bool) -> float:
-    api_obj: Any
-    if chat:
-        if "show" in params:
-            del params["show"]
-        api_obj = Chat(**params)
-    else:
-        if "chat_exit_cmd" in params:
-            del params["chat_exit_cmd"]
-        api_obj = Ask(**params)
-    cost_data_this = api_obj.run(messages)
+def run_chatgpt(
+    messages: Messages, params: dict[str, Any], chat: bool
+) -> float:
+    cls: Ask | Chat = Chat if chat else Ask
+    accepted_args = inspect.signature(cls.__init__).parameters  # type: ignore
+    params = {k: v for k, v in params.items() if k in accepted_args}
+    cost_data_this = cls(**params).run(messages)  # type: ignore
     return cost_data_this
 
 
@@ -148,7 +167,7 @@ def chatgpt_prompt_wrapper() -> None:
     cmd_config = config[cmd]
     chatgpt_params, messages, chat, show_cost = check_args(cmd_config, args)
 
-    cost_data_this = run_api(messages, chatgpt_params, chat)
+    cost_data_this = run_chatgpt(messages, chatgpt_params, chat)
 
     update_cost(cost_file, cost_data_this, show_cost)
 
