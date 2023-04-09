@@ -36,7 +36,7 @@ class Ask(ChatGPT):
             usage = response["usage"]
             usage["prompt_tokens"], usage["completion_tokens"]
             self.log.warning(
-                f'Too much tokens: prompt tokens = {response["usage"]["prompt_tokens"]}, completion tokens = {response["usage"]["completion_tokens"]}, while max_tokens = {self.max_tokens}, model\'s max tokens is {self.model_max_tokens[self.model]}.'
+                f'Too much tokens: prompt tokens = {response["usage"]["prompt_tokens"]}, completion tokens = {response["usage"]["completion_tokens"]}, while max_tokens = {self.max_tokens}, tokens limit is {self.tokens_limit}.'
             )
         elif finish_reason == "content_filter":
             self.log.warning(

@@ -45,6 +45,12 @@ def get_arg_parser() -> ArgumentParser:
         type=int,
     )
     arg_parser.add_argument(
+        "-l",
+        "--limit",
+        help="The limit of the total tokens of the prompt and the completion. Set 0 to use the max values for the model.",
+        type=int,
+    )
+    arg_parser.add_argument(
         "--show",
         help="Show prompt for ask command.",
         action="store_true",

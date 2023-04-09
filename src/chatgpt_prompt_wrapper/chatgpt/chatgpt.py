@@ -26,6 +26,8 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         The model to use.
     max_tokens : int
         The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model minus prompt tokens.
+    tokens_limit : int
+        The limit of the total tokens of the prompt and the completion. Set 0 to use the max values for the model.
     temperature: float
         Sampling temperature (0 ~ 2).
     top_p: float
@@ -41,6 +43,7 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
     key: str
     model: str = "gpt-3.5-turbo"
     max_tokens: int = 0
+    tokens_limit: int = 0
     temperature: float = 1
     top_p: float = 1
     presence_penalty: float = 0
@@ -90,9 +93,16 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
             "gpt-3.5-turbo": (0.002, 0.002),
             "gpt-3.5-turbo-0301": (0.002, 0.002),
         }
+        self.set_model(self.model)
 
     def set_model(self, model: str) -> None:
         self.model = self.model
+        if self.tokens_limit == 0:
+            self.tokens_limit = self.model_max_tokens[self.model]
+        else:
+            self.tokens_limit = min(
+                self.tokens_limit, self.model_max_tokens[self.model]
+            )
         self.prepare_tokens_checker()
 
     def prepare_tokens_checker(self) -> None:
@@ -123,12 +133,9 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         return text
 
     def check_prompt_tokens(self, prompt_tokens: int) -> None:
-        if (
-            prompt_tokens
-            >= self.model_max_tokens[self.model] - self.max_tokens
-        ):
+        if prompt_tokens >= self.tokens_limit - self.max_tokens:
             raise ChatGPTPromptWrapperError(
-                f"Too much tokens: prompt tokens ({prompt_tokens}) >= model's max tokens ({self.model_max_tokens[self.model]}) - max_tokens for completion ({self.max_tokens})."
+                f"Too much tokens: prompt tokens ({prompt_tokens}) >= tokens limit ({self.tokens_limit}) - max_tokens for completion ({self.max_tokens})."
             )
 
     # Ref: https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
@@ -161,7 +168,7 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
 
         if self.max_tokens == 0:
             # it must be maximum tokens for model - 1
-            max_tokens = self.model_max_tokens[self.model] - prompt_tokens - 1
+            max_tokens = self.tokens_limit - prompt_tokens - 1
         else:
             max_tokens = self.max_tokens
         return max_tokens

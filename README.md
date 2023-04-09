@@ -22,7 +22,7 @@ $ pip install chatgpt-prompt-wrapper
 
 ```
 $ cg help
-usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t TOKENS] [--show] [--hide] [--multiline]
+usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t TOKENS] [-l LIMIT] [--show] [--hide] [--multiline]
           [--no_multiline] [--show_cost]
           subcommand [message ...]
 
@@ -39,12 +39,14 @@ optional arguments:
   -t TOKENS, --tokens TOKENS
                         The maximum number of tokens to generate in the chat completion. Set 0 to use
                         the max values for the model minus prompt tokens.
+  -l LIMIT, --limit LIMIT
+                        The limit of the total tokens of the prompt and the completion. Set 0 to use
+                        the max values for the model.
   --show                Show prompt for ask command.
   --hide                Hide prompt for ask command.
   --multiline           Use multiline input for chat command.
   --no_multiline        Use single line input for chat command.
   --show_cost           Show cost used.
-
 ```
 
 ```
@@ -57,6 +59,7 @@ Available subcommands:
     version   : Show version.
     help      : Show help.
   User commands:
+    ask       : Ask a question w/o predefined prompt.
     test      : Example command to test the OpenAI API.
     ...
 ```
@@ -87,6 +90,7 @@ The options for each table can be:
 - `show_cost`: Set `true` to show cost at the end of the command.
 - `model`: The model to use. (default: "gpt-3.5-turbo")
 - `max_tokens`: The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model. (default: 0)
+- `tokens_limit`: The limit of the total tokens of the prompt and the completion. Set 0 to use the max values for the model. (default: 0)
 - `temperature`: Sampling temperature (0 ~ 2). (default: 1)
 - `top_p`: Probability (0 ~ 1) that the model will consider the top_p tokens. Do not set both temperature and top_p in the same time. (default: 1)
 - `presence_penalty`: The penalty for the model to return the same token (-2 ~ 2). (default: 0)

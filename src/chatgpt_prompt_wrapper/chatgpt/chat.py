@@ -152,7 +152,7 @@ class Chat(ChatGPT):
             message_tokens = self.num_tokens_from_message(message)
             if (
                 self.num_total_tokens(message_tokens)
-                >= self.model_max_tokens[self.model] - self.max_tokens
+                >= self.tokens_limit - self.max_tokens
             ):
                 self.log.warning("Input is too long, try shorter.\n")
                 continue
@@ -160,7 +160,7 @@ class Chat(ChatGPT):
             tokens.append(message_tokens)
             while (
                 prompt_tokens := self.num_total_tokens(sum(tokens))
-            ) >= self.model_max_tokens[self.model] - self.max_tokens:
+            ) >= self.tokens_limit - self.max_tokens:
                 messages = messages[1:]
                 tokens = tokens[1:]
             cost += self.prices[self.model][0] * prompt_tokens / 1000.0
