@@ -111,10 +111,12 @@ class Chat(ChatGPT):
                 message["content"] += delta["content"]
             finish_reason = chunk["choices"][0]["finish_reason"]
             if finish_reason == "length":
-                self.log.warning("Too much tokens.\n")
+                self.log.warning(
+                    "The reply was truncated due to the tokens limit.\n"
+                )
             elif finish_reason == "content_filter":
                 self.log.warning(
-                    "Omitted content due to a flag from the content filters.\n"
+                    "The reply was omitted due to the content filters.\n"
                 )
         self.log.info("\n")
         return message
@@ -152,7 +154,7 @@ class Chat(ChatGPT):
             message_tokens = self.num_tokens_from_message(message)
             if (
                 self.num_total_tokens(message_tokens)
-                >= self.tokens_limit - self.max_tokens
+                > self.tokens_limit - self.max_tokens
             ):
                 self.log.warning("Input is too long, try shorter.\n")
                 continue
@@ -160,7 +162,7 @@ class Chat(ChatGPT):
             tokens.append(message_tokens)
             while (
                 prompt_tokens := self.num_total_tokens(sum(tokens))
-            ) >= self.tokens_limit - self.max_tokens:
+            ) > self.tokens_limit - self.max_tokens:
                 messages = messages[1:]
                 tokens = tokens[1:]
             cost += self.prices[self.model][0] * prompt_tokens / 1000.0

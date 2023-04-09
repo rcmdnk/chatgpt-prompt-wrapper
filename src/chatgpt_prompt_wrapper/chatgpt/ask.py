@@ -35,12 +35,16 @@ class Ask(ChatGPT):
         elif finish_reason == "length":
             usage = response["usage"]
             usage["prompt_tokens"], usage["completion_tokens"]
+            if self.max_tokens:
+                reason = f"max_tokens for completion = {self.max_tokens}."
+            else:
+                reason = f"max_tokens for completion = {self.get_max_tokens(messages)} (prompt tokens: {usage['prompt_tokens']}, tokens limit: {self.tokens_limit})."
             self.log.warning(
-                f'Too much tokens: prompt tokens = {response["usage"]["prompt_tokens"]}, completion tokens = {response["usage"]["completion_tokens"]}, while max_tokens = {self.max_tokens}, tokens limit is {self.tokens_limit}.'
+                f"The reply was truncated due to the tokens limit: {reason}"
             )
         elif finish_reason == "content_filter":
             self.log.warning(
-                "Omitted content due to a flag from the content filters."
+                "The reply was omitted due to the content filters."
             )
         elif finish_reason is None:
             self.log.warning("API response is incomplete")

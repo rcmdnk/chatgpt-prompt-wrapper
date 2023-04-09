@@ -40,13 +40,13 @@ def get_arg_parser() -> ArgumentParser:
     )
     arg_parser.add_argument(
         "-t",
-        "--tokens",
+        "--max_tokens",
         help="The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model minus prompt tokens.",
         type=int,
     )
     arg_parser.add_argument(
         "-l",
-        "--limit",
+        "--tokens_limit",
         help="The limit of the total tokens of the prompt and the completion. Set 0 to use the max values for the model.",
         type=int,
     )

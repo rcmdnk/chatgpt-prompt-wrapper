@@ -97,11 +97,12 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
 
     def set_model(self, model: str) -> None:
         self.model = self.model
+        # Total number of tokens must be maximum tokens for model - 1
         if self.tokens_limit == 0:
-            self.tokens_limit = self.model_max_tokens[self.model]
+            self.tokens_limit = self.model_max_tokens[self.model] - 1
         else:
             self.tokens_limit = min(
-                self.tokens_limit, self.model_max_tokens[self.model]
+                self.tokens_limit, self.model_max_tokens[self.model] - 1
             )
         self.prepare_tokens_checker()
 
@@ -133,9 +134,9 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         return text
 
     def check_prompt_tokens(self, prompt_tokens: int) -> None:
-        if prompt_tokens >= self.tokens_limit - self.max_tokens:
+        if prompt_tokens + self.max_tokens > self.tokens_limit:
             raise ChatGPTPromptWrapperError(
-                f"Too much tokens: prompt tokens ({prompt_tokens}) >= tokens limit ({self.tokens_limit}) - max_tokens for completion ({self.max_tokens})."
+                f"Too much tokens: prompt tokens ({prompt_tokens}) + completion tokens (max_tokens) ({self.max_tokens}) > tokens limit ({self.tokens_limit})."
             )
 
     # Ref: https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
@@ -167,8 +168,7 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         self.check_prompt_tokens(prompt_tokens)
 
         if self.max_tokens == 0:
-            # it must be maximum tokens for model - 1
-            max_tokens = self.tokens_limit - prompt_tokens - 1
+            max_tokens = self.tokens_limit - prompt_tokens
         else:
             max_tokens = self.max_tokens
         return max_tokens
@@ -179,6 +179,19 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
                 if message["role"] == "system":
                     message["role"] = "user"
         return messages
+
+    def get_name(self, message: dict[str, str]) -> str:
+        name = message["role"]
+        if "name" in message:
+            if "gpt-3.5" in self.model:
+                name = message["name"]
+            else:
+                name = f"{message['name']} ({message['role']})"
+        return name
+
+    def get_output(self, message: dict[str, str], size: int = 0) -> str:
+        name = self.add_color(self.get_name(message), message["role"], size)
+        return f"{name}> {message['content']}"
 
     def completion(
         self, messages: Messages, stream: bool = False
@@ -196,19 +209,6 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
             stream=stream,
         )
         return response
-
-    def get_name(self, message: dict[str, str]) -> str:
-        name = message["role"]
-        if "name" in message:
-            if "gpt-3.5" in self.model:
-                name = message["name"]
-            else:
-                name = f"{message['name']} ({message['role']})"
-        return name
-
-    def get_output(self, message: dict[str, str], size: int = 0) -> str:
-        name = self.add_color(self.get_name(message), message["role"], size)
-        return f"{name}> {message['content']}"
 
     def run(self, messages: Messages) -> float:
         return 0
