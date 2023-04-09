@@ -91,6 +91,10 @@ def check_args(
             "show_cost",
         ]
     }
+    if not chat and not config["messages"]:
+        raise ChatGPTPromptWrapperError(
+            "This subcommand (ask mode) does not predefined prompt and need input message."
+        )
     return chatgpt_params, config["messages"], chat, show_cost
 
 

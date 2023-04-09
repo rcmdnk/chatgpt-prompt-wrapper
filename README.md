@@ -106,6 +106,9 @@ The options for chat mode:
 Here is a example configuration (if you execute `cg init` at the first time, this configuration file is created).
 
 ```toml
+[ask]
+description = "Ask a question w/o predefined prompt."
+
 [test]
 # Example command to test the OpenAI API, taken from below.
 # [Chat completion - OpenAI API](https://platform.openai.com/docs/guides/chat/introduction)
