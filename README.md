@@ -18,7 +18,7 @@ $ pip install chatgpt-prompt-wrapper
 
 ## Usage
 
-### Command line interface
+### Command line interface Help
 
 ```
 $ cg help
@@ -67,7 +67,23 @@ Available subcommands:
     ...
 ```
 
+### Ask, Chat
+
+`ask` and `chat` are reserved command to run simple interaction w/o predefined prompt.
+
+`cg ask <message>` will returns the answer from ChatGPT for `message`.
+
+`cg chat` starts a chat.
+
 ### Configuration file
+
+You can define your own subcommand in the configuration files.
+
+A subcommand can be `ask` mode or `chat` mode.
+
+- `ask` mode: Send a predefined prompt and a message from the command line and receive one answer.
+- `chat` mode: Start chat with a predefined prompt if defined.
+  - `chat` mode can be `multiline` mode or single (`no_multiline`) mode.
 
 #### File path
 
@@ -110,6 +126,8 @@ The options for chat mode:
 
 - `multiline`: Set `true` to hide prompt for non chat command (default).
 - `no_multiline`: Set `true` to hide prompt for non chat command.
+
+You can make a example configuration file by `cg init`.
 
 Here is a example configuration:
 
