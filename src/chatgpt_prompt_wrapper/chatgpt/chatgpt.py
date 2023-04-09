@@ -26,6 +26,8 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         The model to use.
     max_tokens : int
         The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model minus prompt tokens.
+    min_max_tokens: int
+        The minimum of max_tokens for the completion when max_tokens = 0.
     tokens_limit : int
         The limit of the total tokens of the prompt and the completion. Set 0 to use the max values for the model.
     temperature: float
@@ -43,6 +45,7 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
     key: str
     model: str = "gpt-3.5-turbo"
     max_tokens: int = 0
+    min_max_tokens: int = 200
     tokens_limit: int = 0
     temperature: float = 1
     top_p: float = 1
@@ -59,8 +62,8 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
     def __post_init__(self) -> None:
         self.log = logging.getLogger(__name__)
         openai.api_key = self.key
-
-        self.prepare_tokens_checker()
+        if self.max_tokens:
+            self.min_max_tokens = self.max_tokens
 
         self.ansi_colors = {
             "black": "30",
@@ -134,9 +137,9 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         return text
 
     def check_prompt_tokens(self, prompt_tokens: int) -> None:
-        if prompt_tokens + self.max_tokens > self.tokens_limit:
+        if prompt_tokens + self.min_max_tokens > self.tokens_limit:
             raise ChatGPTPromptWrapperError(
-                f"Too much tokens: prompt tokens ({prompt_tokens}) + completion tokens (max_tokens) ({self.max_tokens}) > tokens limit ({self.tokens_limit})."
+                f"Too much tokens: prompt tokens ({prompt_tokens}) + completion tokens ({self.min_max_tokens}) > tokens limit ({self.tokens_limit})."
             )
 
     # Ref: https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
@@ -167,11 +170,9 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         prompt_tokens = self.num_tokens_from_messages(messages)
         self.check_prompt_tokens(prompt_tokens)
 
-        if self.max_tokens == 0:
-            max_tokens = self.tokens_limit - prompt_tokens
-        else:
-            max_tokens = self.max_tokens
-        return max_tokens
+        if self.max_tokens:
+            return self.max_tokens
+        return max(self.min_max_tokens, self.tokens_limit - prompt_tokens)
 
     def fix_messages(self, messages: Messages) -> Messages:
         if "gpt-3.5" in self.model:

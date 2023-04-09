@@ -165,10 +165,15 @@ def chatgpt_prompt_wrapper() -> None:
         commands(config, log)
         return
 
-    if cmd not in config:
+    cmds = ["ask", "chat"] + list(config)
+    if cmd not in cmds or cmd == "global":
         raise ChatGPTPromptWrapperError(f"Subcommand: {cmd} is not defined.")
 
-    cmd_config = config[cmd]
+    cmd_config = config.get("global", {})
+    cmd_config.update(config.get(cmd, {}))
+    if cmd == "chat":
+        cmd_config["chat"] = True
+
     chatgpt_params, messages, chat, show_cost = check_args(cmd_config, args)
 
     cost_data_this = run_chatgpt(messages, chatgpt_params, chat)

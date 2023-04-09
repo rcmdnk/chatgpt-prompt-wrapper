@@ -22,8 +22,8 @@ $ pip install chatgpt-prompt-wrapper
 
 ```
 $ cg help
-usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t MAX_TOKENS] [-l TOKENS_LIMIT] [--show] [--hide]
-          [--multiline] [--no_multiline] [--show_cost]
+usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t MAX_TOKENS] [-T MIN_MAX_TOKENS] [-l TOKENS_LIMIT]
+          [--show] [--hide] [--multiline] [--no_multiline] [--show_cost]
           subcommand [message ...]
 
 positional arguments:
@@ -39,6 +39,8 @@ optional arguments:
   -t MAX_TOKENS, --max_tokens MAX_TOKENS
                         The maximum number of tokens to generate in the chat completion. Set 0 to use
                         the max values for the model minus prompt tokens.
+  -T MIN_MAX_TOKENS, --min_max_tokens MIN_MAX_TOKENS
+                        The minimum of max_tokens for the completion when max_tokens = 0.
   -l TOKENS_LIMIT, --tokens_limit TOKENS_LIMIT
                         The limit of the total tokens of the prompt and the completion. Set 0 to use
                         the max values for the model.
@@ -53,13 +55,14 @@ optional arguments:
 $ cg commands
 Available subcommands:
   Reserved commands:
+    ask       : Ask w/o predefined prompt.
+    chat      : Start chat w/o predefined prompt.
     init      : Initialize config file with an example command.
     cost      : Show estimated cost used until now.
     commands  : List up subcommands (show this).
     version   : Show version.
     help      : Show help.
   User commands:
-    ask       : Ask a question w/o predefined prompt.
     test      : Example command to test the OpenAI API.
     ...
 ```
@@ -90,6 +93,7 @@ The options for each table can be:
 - `show_cost`: Set `true` to show cost at the end of the command.
 - `model`: The model to use. (default: "gpt-3.5-turbo")
 - `max_tokens`: The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model. (default: 0)
+- `min_max_tokens`: The minimum of max_tokens for the completion when max_tokens = 0. (default: 200)
 - `tokens_limit`: The limit of the total tokens of the prompt and the completion. Set 0 to use the max values for the model. (default: 0)
 - `temperature`: Sampling temperature (0 ~ 2). (default: 1)
 - `top_p`: Probability (0 ~ 1) that the model will consider the top_p tokens. Do not set both temperature and top_p in the same time. (default: 1)
@@ -107,11 +111,13 @@ The options for chat mode:
 - `multiline`: Set `true` to hide prompt for non chat command (default).
 - `no_multiline`: Set `true` to hide prompt for non chat command.
 
-Here is a example configuration (if you execute `cg init` at the first time, this configuration file is created).
+Here is a example configuration:
 
 ```toml
-[ask]
-description = "Ask a question w/o predefined prompt."
+[global]
+# Global configuration
+# `global` is special name and not a subcommand
+model = 'gpt-3.5-turbo'
 
 [test]
 # Example command to test the OpenAI API, taken from below.
@@ -145,8 +151,8 @@ description = "Ask a python programming question."
 role = "user"
 content = "You are an expert python programmer. Answer the following questions."
 
-[chat]
-description = "Chat with the assistant."
+[enjoy_chat]
+description = "Chat example with a predefined prompt."
 chat = true
 [[chat.messages]]
 role = "user"
@@ -171,7 +177,7 @@ Command examples:
 
 ![py command](https://raw.githubusercontent.com/rcmdnk/chatgpt-prompt-wrapper/main/fig/cg_py.png)
 
-- caht
+- enjoy_chat
 
 ![chat command](https://raw.githubusercontent.com/rcmdnk/chatgpt-prompt-wrapper/main/fig/cg_chat.gif)
 

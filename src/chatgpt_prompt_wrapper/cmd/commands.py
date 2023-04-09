@@ -5,6 +5,8 @@ from typing import Any
 def commands(config: dict[str, Any], log: logging.Logger) -> None:
     log.info("Available subcommands:")
     log.info("  Reserved commands:")
+    log.info(f"    {'ask':<10s}: Ask w/o predefined prompt.")
+    log.info(f"    {'chat':<10s}: Start chat w/o predefined prompt.")
     log.info(
         f"    {'init':<10s}: Initialize config file with an example command."
     )
@@ -14,4 +16,6 @@ def commands(config: dict[str, Any], log: logging.Logger) -> None:
     log.info(f"    {'help':<10s}: Show help.")
     log.info("  User commands:")
     for cmd in config:
+        if cmd in ["global", "ask", "chat"]:
+            continue
         log.info(f"    {cmd:<10s}: {config[cmd].get('description', '')}")

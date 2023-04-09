@@ -38,7 +38,7 @@ class Ask(ChatGPT):
             if self.max_tokens:
                 reason = f"max_tokens for completion = {self.max_tokens}."
             else:
-                reason = f"max_tokens for completion = {self.get_max_tokens(messages)} (prompt tokens: {usage['prompt_tokens']}, tokens limit: {self.tokens_limit})."
+                reason = f"max_tokens for completion = {self.get_max_tokens(messages)} (prompt tokens: {usage['prompt_tokens']}, tokens limit: {self.tokens_limit}, minimum of max tokens: {self.min_max_tokens})."
             self.log.warning(
                 f"The reply was truncated due to the tokens limit: {reason}"
             )

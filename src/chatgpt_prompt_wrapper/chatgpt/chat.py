@@ -122,11 +122,6 @@ class Chat(ChatGPT):
         return message
 
     def run(self, messages: Messages) -> float:
-        max_tokens_orig = self.max_tokens
-        if self.max_tokens == 0:
-            # Set minimum max_tokens for chat
-            self.max_tokens = 100
-
         messages = self.fix_messages(messages)
         tokens = [
             self.num_tokens_from_message(message) for message in messages
@@ -134,8 +129,10 @@ class Chat(ChatGPT):
         prompt_tokens = self.num_total_tokens(sum(tokens))
         self.check_prompt_tokens(prompt_tokens)
 
-        max_size = max(
-            10, max(len(self.get_name(message)) for message in messages)
+        max_size = (
+            max(10, max(len(self.get_name(message)) for message in messages))
+            if messages
+            else 10
         )
         for message in messages:
             self.log.info(self.get_output(message, max_size))
@@ -154,7 +151,7 @@ class Chat(ChatGPT):
             message_tokens = self.num_tokens_from_message(message)
             if (
                 self.num_total_tokens(message_tokens)
-                > self.tokens_limit - self.max_tokens
+                > self.tokens_limit - self.min_max_tokens
             ):
                 self.log.warning("Input is too long, try shorter.\n")
                 continue
@@ -162,7 +159,7 @@ class Chat(ChatGPT):
             tokens.append(message_tokens)
             while (
                 prompt_tokens := self.num_total_tokens(sum(tokens))
-            ) > self.tokens_limit - self.max_tokens:
+            ) > self.tokens_limit - self.min_max_tokens:
                 messages = messages[1:]
                 tokens = tokens[1:]
             cost += self.prices[self.model][0] * prompt_tokens / 1000.0
@@ -183,5 +180,4 @@ class Chat(ChatGPT):
         self.log.info("\n")
 
         self.reset_no_line_break_log()
-        self.max_tokens = max_tokens_orig
         return cost

@@ -15,10 +15,7 @@ def get_config(dir_name: str, file_name: str) -> Path:
 
 
 def example_config() -> str:
-    return """[ask]
-description = "Ask a question w/o predefined prompt."
-
-[test]
+    return """[test]
 # Example command to test the OpenAI API, taken from below.
 # [Chat completion - OpenAI API](https://platform.openai.com/docs/guides/chat/introduction)
 
@@ -49,11 +46,4 @@ description = "Ask a python programming question."
 [[py.messages]]
 role = "user"
 content = "You are an expert python programmer. Answer the following questions."
-
-[chat]
-description = "Chat with the assistant."
-chat = true
-[[chat.messages]]
-role = "user"
-content = "Let's enjoy a chat."
 """

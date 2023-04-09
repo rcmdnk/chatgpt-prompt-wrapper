@@ -45,6 +45,12 @@ def get_arg_parser() -> ArgumentParser:
         type=int,
     )
     arg_parser.add_argument(
+        "-T",
+        "--min_max_tokens",
+        help="The minimum of max_tokens for the completion when max_tokens = 0.",
+        type=int,
+    )
+    arg_parser.add_argument(
         "-l",
         "--tokens_limit",
         help="The limit of the total tokens of the prompt and the completion. Set 0 to use the max values for the model.",
