@@ -22,8 +22,8 @@ $ pip install chatgpt-prompt-wrapper
 
 ```
 $ cg help
-usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t TOKENS] [-l LIMIT] [--show] [--hide] [--multiline]
-          [--no_multiline] [--show_cost]
+usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t MAX_TOKENS] [-l TOKENS_LIMIT] [--show] [--hide]
+          [--multiline] [--no_multiline] [--show_cost]
           subcommand [message ...]
 
 positional arguments:
@@ -36,10 +36,10 @@ optional arguments:
   -c CONF, --conf CONF  Path to the configuration toml file.
   -m MODEL, --model MODEL
                         ChatGPT Model to use.
-  -t TOKENS, --tokens TOKENS
+  -t MAX_TOKENS, --max_tokens MAX_TOKENS
                         The maximum number of tokens to generate in the chat completion. Set 0 to use
                         the max values for the model minus prompt tokens.
-  -l LIMIT, --limit LIMIT
+  -l TOKENS_LIMIT, --tokens_limit TOKENS_LIMIT
                         The limit of the total tokens of the prompt and the completion. Set 0 to use
                         the max values for the model.
   --show                Show prompt for ask command.
