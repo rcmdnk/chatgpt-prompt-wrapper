@@ -6,7 +6,7 @@ from typing import Any
 
 from .__version__ import __version__
 from .arg_parser import cli_help, non_chatgpt_params, parse_arg
-from .chatgpt import ChatGPT, Messages
+from .chatgpt import Ask, Chat, Messages
 from .chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
 from .cmd import commands, cost, init
 from .config import get_config
@@ -86,6 +86,20 @@ def update_cost(
         json.dump(cost_data, f)
 
 
+def run_api(messages: Messages, params: dict[str, Any], chat: bool) -> float:
+    api_obj: Any
+    if chat:
+        if "show" in params:
+            del params["show"]
+        api_obj = Chat(**params)
+    else:
+        if "chat_exit_cmd" in params:
+            del params["chat_exit_cmd"]
+        api_obj = Ask(**params)
+    cost_data_this = api_obj.run(messages)
+    return cost_data_this
+
+
 def chatgpt_prompt_wrapper() -> None:
     args = parse_arg()
     cmd = args.subcommand[0]
@@ -120,6 +134,7 @@ def chatgpt_prompt_wrapper() -> None:
         raise ChatGPTPromptWrapperError(
             f"Config file {config_file} does not exist"
         )
+
     with open(config_file, "rb") as f:
         config = tomllib.load(f)
 
@@ -133,11 +148,7 @@ def chatgpt_prompt_wrapper() -> None:
     cmd_config = config[cmd]
     chatgpt_params, messages, chat, show_cost = check_args(cmd_config, args)
 
-    cg = ChatGPT(**chatgpt_params)
-    if not chat:
-        cost_data_this = cg.ask(messages)
-    else:
-        cost_data_this = cg.chat(messages)
+    cost_data_this = run_api(messages, chatgpt_params, chat)
 
     update_cost(cost_file, cost_data_this, show_cost)
 

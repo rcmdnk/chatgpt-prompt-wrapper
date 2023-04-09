@@ -15,6 +15,7 @@ python = ">=3.9,<3.12"
 tomli = { version = "2.0.1", python = "<3.11"}
 openai = "0.27.4"
 tiktoken = "0.3.3"
+docstring-inheritance = "^1.1.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "7.2.2"
@@ -70,6 +71,7 @@ ignore_missing_imports = true
 scripts_are_modules = true
 install_types = true
 non_interactive = true
+allow_subclassing_any = true
 
 [tool.poetry.scripts]
 cg = "chatgpt_prompt_wrapper:main"
