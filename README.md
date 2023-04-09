@@ -199,6 +199,73 @@ Command examples:
 
 ![chat command](https://raw.githubusercontent.com/rcmdnk/chatgpt-prompt-wrapper/main/fig/cg_chat.gif)
 
+## Example usage as a part of an external script
+
+### Git commit by ChatGPT
+
+Prepare the following script with name like `git-c`
+and put it in the directory under the PATH.
+
+```bash
+#!/usr/bin/env bash
+
+if ! type cg >/dev/null 2>&1; then
+  echo "cg command not found. Please install cg command."
+  echo "    $ pip install chatgpt-prompt-wrapper"
+  exit 1
+fi
+
+if [ "$1" = "-a" ];then
+  git add -u
+fi
+
+git hook run --ignore-missing pre-commit
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
+prompt="
+Please make git commit messages for the following diff output.
+
+Each commit message must be one line starting with one of the following words.
+
+* feat: (new feature for the user, not a new feature for build script)
+* fix: (bug fix for the user, not a fix to a build script)
+* docs: (changes to the documentation)
+* style: (formatting, missing semi colons, etc; no production code change)
+* refactor: (refactoring production code, eg. renaming a variable)
+* test: (adding missing tests, refactoring tests; no production code change)
+* chore: (updating grunt tasks etc; no production code change)
+
+
+### diff
+
+$(git diff --cached)
+"
+
+message="$(cg ask "$prompt")
+
+# feat: (new feature for the user, not a new feature for build script)
+# fix: (bug fix for the user, not a fix to a build script)
+# docs: (changes to the documentation)
+# style: (formatting, missing semi colons, etc; no production code change)
+# refactor: (refactoring production code, eg. renaming a variable)
+# test: (adding missing tests, refactoring tests; no production code change)
+# chore: (updating grunt tasks etc; no production code change)
+#
+# Ref: https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716
+"
+
+git commit --no-verify -e -m "$message"
+```
+
+Now you can use `git c` command.
+
+If any updates are staged, run `git c` and the git opens the editor for the commit
+with commit messages made by ChatGPT.
+
+`-a` option can be used as same as `git commit -a`
+
 ## Development
 
 ### Poetry
