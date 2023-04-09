@@ -75,6 +75,14 @@ Available subcommands:
 
 `cg chat` starts a chat.
 
+:memo: In the `chat` mode, all messages in the past including answers from
+ChatGPT will be sent for each time when you send a new message.
+
+The oldest message will be dropped if the number of total tokens (including the reserved tokens for the completion defined by `max_tokens` or `min_max_tokens`) exceeds the limit of tokens (`tokens_limit` or the number of max tokens (-1) for the used model).
+
+It means you will send almost the max length after a long conversation.
+Please keep the cost in mind. You may want to set `tokens_limit`.
+
 ### Configuration file
 
 You can define your own subcommand in the configuration files.
