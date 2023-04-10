@@ -40,7 +40,9 @@ class Chat(ChatGPT):
         if self.multiline:
             toolbar_text = f"Send text: <b>[Meta+Enter]</b>, <b>[Esc]</b><b>[Enter]</b>. Exit chat: <b>[Ctrl-C]</b>, <b>{self.chat_exit_cmd[0]}</b>, "
         else:
-            f"Exit chat: <b>[Ctrl-C]</b>, <b>{self.chat_exit_cmd[0]}</b>,"
+            toolbar_text = (
+                f"Exit chat: <b>[Ctrl-C]</b>, <b>{self.chat_exit_cmd[0]}</b>,"
+            )
         if self.vi:
             toolbar_text += "<b>Vi mode</b>."
         else:
