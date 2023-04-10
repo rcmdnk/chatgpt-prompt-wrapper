@@ -5,7 +5,7 @@
 
 Python CLI implementation for [ChatGPT](https://openai.com/blog/chatgpt).
 
-## Requirement
+## Requirements
 
 - Python 3.9, 3.10, 3.11
 - Poetry (For development)
@@ -16,9 +16,23 @@ Python CLI implementation for [ChatGPT](https://openai.com/blog/chatgpt).
 $ pip install chatgpt-prompt-wrapper
 ```
 
+## Preparation
+
+To get an OpenAI API key, go to [Account API Keys - OpenAI API](https://platform.openai.com/account/api-keys).
+
+Set it as the environment variable `OPENAI_API_KEY`.
+
+To load the variable when you start the terminal, write it in **.bashrc** or **.zshrc**.
+
+```
+export OPENAI_API_KEY="sk-..."
+```
+
+Alternatively, pass the key using the '-k' or '--key' argument in the command.
+
 ## Usage
 
-### Command line interface Help
+### Command-line interface Help
 
 ```
 $ cg help
@@ -70,29 +84,29 @@ Available subcommands:
 
 ### Ask, Chat
 
-`ask` and `chat` are reserved command to run simple interaction w/o predefined prompt.
+`ask` and `chat` are reserved commands for running simple interaction without a predefined prompt.
 
-`cg ask <message>` will returns the answer from ChatGPT for `message`.
+`cg ask <message>` returns the answer from ChatGPT for `message`.
 
 `cg chat` starts a chat.
 
-:memo: In the `chat` mode, all messages in the past including answers from
-ChatGPT will be sent for each time when you send a new message.
+:memo: In `chat` mode, all messages in the past, including answers from
+ChatGPT, will be sent each time you send a new message.
 
-The oldest message will be dropped if the number of total tokens (including the reserved tokens for the completion defined by `max_tokens` or `min_max_tokens`) exceeds the limit of tokens (`tokens_limit` or the number of max tokens (-1) for the used model).
+The oldest message will be dropped when the total tokens (including the reserved tokens for the completion defined by `max_tokens` or `min_max_tokens`) exceeds the tokens limit (`tokens_limit` or the number of max tokens (-1) for the used model).
 
 It means you will send almost the max length after a long conversation.
 Please keep the cost in mind. You may want to set `tokens_limit`.
 
 ### Configuration file
 
-You can define your own subcommand in the configuration files.
+You can define your command in the configuration files.
 
-A subcommand can be `ask` mode or `chat` mode.
+A command can be in either `ask` mode or `chat` mode.
 
 - `ask` mode: Send a predefined prompt and a message from the command line and receive one answer.
-- `chat` mode: Start chat with a predefined prompt if defined.
-  - `chat` mode can be `multiline` mode or single (`no_multiline`) mode.
+- `chat` mode: Start a chat with a predefined prompt if defined:
+  - `chat` mode can be in either `multiline` mode or single (`no_multiline`) mode.
 
 #### File path
 
@@ -107,21 +121,24 @@ You can change the path by `-c <file>` (`--conf <file>`) option.
 
 #### How to write the configuration file
 
-The configuration file is written in the TOML format.
+The configuration file is written in the [TOML format](https://toml.io/en/).
 
-Subcommand is defined as the top table name.
+You can define a command as the top table name.
+
+`global` is the special table to define global options,
+which are enabled for all commands if the command does not have the corresponding options.
 
 The options for each table can be:
 
 - `description`: Description of the command.
-- `chat`: Set `true` to make the command chat mode (default is ask mode, only one exchange).
-- `show_cost`: Set `true` to show cost at the end of the command.
-- `model`: The model to use. (default: "gpt-3.5-turbo")
-- `max_tokens`: The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model. (default: 0)
-- `min_max_tokens`: The minimum of max_tokens for the completion when max_tokens = 0. (default: 200)
-- `tokens_limit`: The limit of the total tokens of the prompt and the completion. Set 0 to use the max values for the model. (default: 0)
+- `chat`: Set `true` to switch to `chat` mode (default is `ask` mode, only one exchange).
+- `show_cost`: Set `true` to show the cost at the end of the command.
+- `model`: The model to use (default: "gpt-3.5-turbo").
+- `max_tokens`: The maximum number of tokens to generate in the chat completion. Set 0 to use the maximum values for the model. (default: 0)
+- `min_max_tokens`: The minimum of `max_tokens` for the completion when `max_tokens = 0`. (default: 200)
+- `tokens_limit`: The limit of the total tokens of the prompt and the completion. Set 0 to use the maximum values for the model. (default: 0)
 - `temperature`: Sampling temperature (0 ~ 2). (default: 1)
-- `top_p`: Probability (0 ~ 1) that the model will consider the top_p tokens. Do not set both temperature and top_p in the same time. (default: 1)
+- `top_p`: Probability (0 ~ 1) that the model will consider the top_p tokens. Do not set both temperature and top_p at the same time. (default: 1)
 - `presence_penalty`: The penalty for the model to return the same token (-2 ~ 2). (default: 0)
 - `frequency_penalty`: The penalty for the model to return the same token multiple times (-2 ~ 2). (default: 0)
 - List of `messages`: Dictionary of message, which must have `role` ('system', 'user' or 'assistant') and `content` (message text).

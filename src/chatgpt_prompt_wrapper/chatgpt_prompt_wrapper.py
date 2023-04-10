@@ -113,6 +113,7 @@ def update_cost(
             cost_data = {k: v for k, v in sorted(json.load(f).items())}
     month = datetime.now().strftime("%Y%m")
     cost_data[month] = cost_data.get(month, 0) + new_cost
+    cost_file.parent.mkdir(parents=True, exist_ok=True)
     with open(cost_file, "w") as f:
         json.dump(cost_data, f)
 
@@ -157,13 +158,18 @@ def chatgpt_prompt_wrapper() -> None:
             "Set OPEN_AI_API_KEY environment variable or give it by -k (--key) argument."
         )
 
-    if not config_file.is_file():
+    if cmd not in ['ask', 'chat'] and not config_file.is_file():
         raise ChatGPTPromptWrapperError(
-            f"Config file {config_file} does not exist"
+            f"Configuration file {config_file} does not exist"
+            f"`ask` or `cht` subcommand can be used w/o configuration file."
+            f"You prepare the configuration file by `cg init` command."
         )
 
-    with open(config_file, "rb") as f:
-        config = tomllib.load(f)
+    if config_file.is_file():
+        with open(config_file, "rb") as f:
+            config = tomllib.load(f)
+    else:
+        config = {}
 
     if cmd == "commands":
         commands(config, log)

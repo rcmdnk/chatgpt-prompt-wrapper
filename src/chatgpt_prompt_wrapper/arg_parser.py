@@ -30,7 +30,7 @@ def get_arg_parser() -> ArgumentParser:
         default=os.environ.get("OPENAI_API_KEY", ""),
     )
     arg_parser.add_argument(
-        "-c", "--conf", help="Path to the configuration toml file.", type=str
+        "-c", "--conf", help="Path to the configuration TOML file.", type=str
     )
     arg_parser.add_argument(
         "-m", "--model", help="ChatGPT Model to use.", type=str
@@ -55,32 +55,32 @@ def get_arg_parser() -> ArgumentParser:
     )
     arg_parser.add_argument(
         "--show",
-        help="Show prompt for ask command.",
+        help="Show prompt for `ask` command.",
         action="store_true",
     )
     arg_parser.add_argument(
         "--hide",
-        help="Hide prompt for ask command.",
+        help="Hide prompt for `ask` command.",
         action="store_true",
     )
     arg_parser.add_argument(
         "--multiline",
-        help="Use multiline input for chat command.",
+        help="Use multiline input for `chat` command.",
         action="store_true",
     )
     arg_parser.add_argument(
         "--no_multiline",
-        help="Use single line input for chat command.",
+        help="Use single line input for `chat` command.",
         action="store_true",
     )
     arg_parser.add_argument(
         "--vi",
-        help="Use vi mode at chat.",
+        help="Use vi mode at `chat`.",
         action="store_true",
     )
     arg_parser.add_argument(
         "--emacs",
-        help="Use emacs mode at chat.",
+        help="Use emacs mode at `chat`.",
         action="store_true",
     )
     arg_parser.add_argument(
