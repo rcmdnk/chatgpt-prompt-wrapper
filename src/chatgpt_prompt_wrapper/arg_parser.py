@@ -2,15 +2,12 @@ import os
 import sys
 from argparse import ArgumentParser, Namespace
 
-non_chatgpt_params = [
-    "subcommand",
-    "message",
-    "conf",
-    "show",
-    "hide",
-    "multiline",
-    "no_multiline",
-    "show_cost",
+direct_chatgpt_params = [
+    "key",
+    "model",
+    "max_tokens",
+    "min_max_tokens",
+    "tokens_limit",
 ]
 
 
@@ -74,6 +71,16 @@ def get_arg_parser() -> ArgumentParser:
     arg_parser.add_argument(
         "--no_multiline",
         help="Use single line input for chat command.",
+        action="store_true",
+    )
+    arg_parser.add_argument(
+        "--vi",
+        help="Use vi mode at chat.",
+        action="store_true",
+    )
+    arg_parser.add_argument(
+        "--emacs",
+        help="Use emacs mode at chat.",
         action="store_true",
     )
     arg_parser.add_argument(

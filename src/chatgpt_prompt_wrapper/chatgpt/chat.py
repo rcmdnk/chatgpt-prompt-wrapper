@@ -20,28 +20,32 @@ class Chat(ChatGPT):
     ----------
     multiline : bool
         Whether to use multiline prompt.
+    vi: bool
+        If true, use the vi keybindings at input prompt (default is emacs key bindings).
     chat_exit_cmd: list[str]
         The command to exit the chat.
     """
 
     multiline: bool = True
+    vi: bool = False
     chat_exit_cmd: list[str] = field(
         default_factory=lambda: ["bye", "bye!", "exit", "quit"]
     )
 
     def __post_init__(self) -> None:
         super().__post_init__()
-        self.make_propt()
+        self.make_prompt()
 
-    def make_propt(self) -> None:
+    def make_prompt(self) -> None:
         if self.multiline:
-            toolbar_view = HTML(
-                f"Send text: <b>[Meta+Enter]</b>, <b>[Esc]</b><b>[Enter]</b>. Exit chat: <b>[Ctrl-C]</b>, <b>{self.chat_exit_cmd[0]}</b>"
-            )
+            toolbar_text = f"Send text: <b>[Meta+Enter]</b>, <b>[Esc]</b><b>[Enter]</b>. Exit chat: <b>[Ctrl-C]</b>, <b>{self.chat_exit_cmd[0]}</b>, "
         else:
-            toolbar_view = HTML(
-                f"Exit chat: <b>[Ctrl-C]</b>, <b>{self.chat_exit_cmd[0]}</b>"
-            )
+            f"Exit chat: <b>[Ctrl-C]</b>, <b>{self.chat_exit_cmd[0]}</b>,"
+        if self.vi:
+            toolbar_text += "<b>Vi mode</b>."
+        else:
+            toolbar_text += "<b>emacs mode</b>."
+        toolbar_view = HTML(toolbar_text)
 
         def bottom_toolbar() -> HTML:
             return toolbar_view
@@ -70,6 +74,7 @@ class Chat(ChatGPT):
             "prompt_continuation": prompt_continuation,
             "bottom_toolbar": bottom_toolbar,
             "key_bindings": bindings,
+            "vi_mode": self.vi,
         }
 
     def set_no_line_break_log(self) -> None:

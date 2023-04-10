@@ -22,8 +22,8 @@ $ pip install chatgpt-prompt-wrapper
 
 ```
 $ cg help
-usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t MAX_TOKENS] [-T MIN_MAX_TOKENS] [-l TOKENS_LIMIT]
-          [--show] [--hide] [--multiline] [--no_multiline] [--show_cost]
+usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t MAX_TOKENS] [-T MIN_MAX_TOKENS] [-l TOKENS_LIMIT] [--show] [--hide] [--multiline]
+          [--no_multiline] [--vi] [--emacs] [--show_cost]
           subcommand [message ...]
 
 positional arguments:
@@ -37,17 +37,18 @@ optional arguments:
   -m MODEL, --model MODEL
                         ChatGPT Model to use.
   -t MAX_TOKENS, --max_tokens MAX_TOKENS
-                        The maximum number of tokens to generate in the chat completion. Set 0 to use
-                        the max values for the model minus prompt tokens.
+                        The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model
+                        minus prompt tokens.
   -T MIN_MAX_TOKENS, --min_max_tokens MIN_MAX_TOKENS
                         The minimum of max_tokens for the completion when max_tokens = 0.
   -l TOKENS_LIMIT, --tokens_limit TOKENS_LIMIT
-                        The limit of the total tokens of the prompt and the completion. Set 0 to use
-                        the max values for the model.
+                        The limit of the total tokens of the prompt and the completion. Set 0 to use the max values for the model.
   --show                Show prompt for ask command.
   --hide                Hide prompt for ask command.
   --multiline           Use multiline input for chat command.
   --no_multiline        Use single line input for chat command.
+  --vi                  Use vi mode at chat.
+  --emacs               Use emacs mode at chat.
   --show_cost           Show cost used.
 ```
 
@@ -134,6 +135,8 @@ The options for chat mode:
 
 - `multiline`: Set `true` to hide prompt for non chat command (default).
 - `no_multiline`: Set `true` to hide prompt for non chat command.
+- `vi`: Set `true` to use vi mode.
+- `emacs`: Set `true` to use emacs mode (default).
 
 You can make a example configuration file by `cg init`.
 

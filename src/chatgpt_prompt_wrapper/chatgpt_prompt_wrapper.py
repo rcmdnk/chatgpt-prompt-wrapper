@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from .__version__ import __version__
-from .arg_parser import cli_help, non_chatgpt_params, parse_arg
+from .arg_parser import cli_help, direct_chatgpt_params, parse_arg
 from .chatgpt import Ask, Chat, Messages
 from .chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
 from .cmd import commands, cost, init
@@ -55,6 +55,17 @@ def set_config_multiline(config: dict[str, Any], args: Namespace) -> None:
         config["multiline"] = False
 
 
+def set_config_vi(config: dict[str, Any], args: Namespace) -> None:
+    if "vi" in config:
+        pass
+    elif "emacs" in config:
+        config["vi"] = not config["emacs"]
+    if args.vi:
+        config["vi"] = True
+    elif args.emacs:
+        config["vi"] = False
+
+
 def get_show_cost(config: dict[str, Any], args: Namespace) -> bool:
     show_cost = False
     show_cost = config["show_cost"] if "show_cost" in config else False
@@ -69,11 +80,12 @@ def check_args(
     set_config_messages(config, args)
     set_config_show(config, args)
     set_config_multiline(config, args)
+    set_config_vi(config, args)
     show_cost = get_show_cost(config, args)
     chat = config["chat"] if "chat" in config else False
 
     for arg in vars(args):
-        if arg in non_chatgpt_params:
+        if arg not in direct_chatgpt_params:
             continue
         if (param := getattr(args, arg)) is not None:
             config[arg] = param
@@ -81,15 +93,7 @@ def check_args(
     chatgpt_params = {
         k: v
         for k, v in config.items()
-        if k
-        not in [
-            "messages",
-            "description",
-            "hide",
-            "chat",
-            "no_multi",
-            "show_cost",
-        ]
+        if k in direct_chatgpt_params + ["show", "multiline", "vi"]
     }
     if not chat and not config["messages"]:
         raise ChatGPTPromptWrapperError(
