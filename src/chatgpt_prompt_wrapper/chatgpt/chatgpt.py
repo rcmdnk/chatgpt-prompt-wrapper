@@ -40,6 +40,8 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         The penalty for the model to return the same token multiple times (-2 ~ 2).
     colors: dict[str, str]
         The colors to use for the different roles.
+    alias: dict[str, str]
+        The aliases of role names.
     """
 
     key: str
@@ -56,6 +58,13 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
             "system": "blue",
             "user": "green",
             "assistant": "cyan",
+        }
+    )
+    alias: dict[str, str] = field(
+        default_factory=lambda: {
+            "system": "System",
+            "user": "User",
+            "assistant": "Assistant",
         }
     )
 
@@ -182,7 +191,7 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         return messages
 
     def get_name(self, message: dict[str, str]) -> str:
-        name = message["role"]
+        name = self.alias[message["role"]]
         if "name" in message:
             if "gpt-3.5" in self.model:
                 name = message["name"]

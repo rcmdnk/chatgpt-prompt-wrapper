@@ -148,7 +148,7 @@ class Chat(ChatGPT):
         cost = 0.0
         self.finish_chat = False
         while True:
-            user = [("class:user", f"{'user':>{max_size}}> ")]
+            user = [("class:user", f"{self.alias['user']:>{max_size}}> ")]
             text = prompt(user, **self.prompt_params)  # type: ignore
             if self.finish_chat:
                 break

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chatgpt-prompt-wrapper"
-version = "0.0.7"
+version = "0.0.8"
 description = ""
 authors = ["rcmdnk <rcmdnk@gmail.com>"]
 repository = "https://github.com/rcmdnk/chatgpt-prompt-wrapper"
