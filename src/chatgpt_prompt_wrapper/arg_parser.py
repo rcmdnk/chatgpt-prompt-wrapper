@@ -1,14 +1,13 @@
 import os
-import sys
 from argparse import ArgumentParser, Namespace
 
-direct_chatgpt_params = [
-    "key",
-    "model",
-    "max_tokens",
-    "min_max_tokens",
-    "tokens_limit",
+true_false_params = [
+    ("show", "hide"),
+    ("multiline", "no_multiline"),
+    ("vi", "emacs"),
 ]
+
+true_params = ["show_cost"]
 
 
 def get_arg_parser() -> ArgumentParser:
@@ -91,7 +90,7 @@ def get_arg_parser() -> ArgumentParser:
     return arg_parser
 
 
-def parse_arg() -> Namespace:
+def parse_args(argv: list[str]) -> Namespace:
     arg_parser = get_arg_parser()
     optional_strings: dict[str, int] = {}
     for action in arg_parser._actions:
@@ -105,7 +104,7 @@ def parse_arg() -> Namespace:
     option = []
     is_option = 0
     is_positional = False
-    for arg in sys.argv[1:]:
+    for arg in argv:
         if is_positional:
             positional.append(arg)
         elif is_option:

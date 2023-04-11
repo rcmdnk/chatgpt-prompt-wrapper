@@ -1,7 +1,9 @@
-from chatgpt_prompt_wrapper.arg_parser import cli_help, parse_arg
+import sys
+
+from chatgpt_prompt_wrapper.arg_parser import cli_help, parse_args
 
 
-def test_parse_arg(monkeypatch):
+def test_parse_args(monkeypatch):
     monkeypatch.setattr(
         "sys.argv",
         [
@@ -16,7 +18,7 @@ def test_parse_arg(monkeypatch):
             "in message",
         ],
     )
-    args = parse_arg()
+    args = parse_args(sys.argv[1:])
     assert args.subcommand == ["sub_cmd"]
     assert args.conf == "file"
     assert args.message == [
