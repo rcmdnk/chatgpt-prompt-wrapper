@@ -8,12 +8,19 @@ Python CLI implementation for [ChatGPT](https://openai.com/blog/chatgpt).
 ## Requirements
 
 - Python 3.9, 3.10, 3.11
-- Poetry (For development)
 
 ## Installation
 
+By Homebrew:
+
 ```
-$ pip install chatgpt-prompt-wrapper
+$ brew install rcmdnk/rcmdnkpac/chatgpt-prompt-wrapper
+```
+
+By pip:
+
+```
+$ pip3 install chatgpt-prompt-wrapper
 ```
 
 ## Preparation
