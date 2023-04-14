@@ -10,7 +10,7 @@ from typing import Any
 
 from .__version__ import __version__
 from .arg_parser import cli_help, parse_args, true_false_params, true_params
-from .chatgpt import Ask, Chat
+from .chatgpt import Ask, Chat, Discussion
 from .chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
 from .cmd import commands, cost, init
 from .config import get_config
@@ -132,9 +132,14 @@ class ChatGPTPromptWrapper:
         cmd_config["chat"] = (
             True if self.cmd == "chat" else cmd_config.get("chat", False)
         )
+        cmd_config["discussion"] = cmd_config.get("discussion", False)
         self.update_cmd_config(cmd_config)
 
-        if not cmd_config["chat"] and not cmd_config["messages"]:
+        if (
+            not cmd_config["chat"]
+            and not cmd_config["discussion"]
+            and not cmd_config["messages"]
+        ):
             raise ChatGPTPromptWrapperError(
                 "This subcommand (ask mode) does not predefined prompt and need input message."
             )
@@ -142,7 +147,13 @@ class ChatGPTPromptWrapper:
         return cmd_config
 
     def run_chatgpt(self, config: dict[str, Any]) -> float:
-        cls: Ask | Chat = Chat if config["chat"] else Ask
+        cls: Ask | Chat | Discussion
+        if config["chat"]:
+            cls = Chat
+        elif config["discussion"]:
+            cls = Discussion
+        else:
+            cls = Ask
         accepted_args = inspect.signature(cls.__init__).parameters  # type: ignore
         params = {k: v for k, v in config.items() if k in accepted_args}
         cost_data_this = cls(**params).run(config["messages"])  # type: ignore

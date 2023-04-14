@@ -144,9 +144,9 @@ class Chat(ChatGPT):
         for message in messages:
             self.log.info(self.get_output(message, max_size))
 
-        self.set_no_line_break_log()
         cost = 0.0
         self.finish_chat = False
+        self.set_no_line_break_log()
         while True:
             user = [("class:user", f"{self.alias['user']:>{max_size}}> ")]
             text = prompt(user, **self.prompt_params)  # type: ignore
@@ -176,15 +176,13 @@ class Chat(ChatGPT):
             )
             new_message = self.show_stream(response, max_size)
             messages.append(new_message)
+            tokens.append(self.num_tokens_from_message(new_message))
             cost += (
                 self.prices[self.model][1]
                 * self.num_tokens_from_message(new_message, only_content=True)
                 / 1000.0
             )
-
+        self.reset_no_line_break_log()
         message = {"role": "assistant", "content": "Bye!"}
         self.log.info(self.get_output(message, max_size))
-        self.log.info("\n")
-
-        self.reset_no_line_break_log()
         return cost

@@ -191,7 +191,7 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         return messages
 
     def get_name(self, message: dict[str, str]) -> str:
-        name = self.alias[message["role"]]
+        name = self.alias.get(message["role"], message["role"])
         if "name" in message:
             if "gpt-3.5" in self.model:
                 name = message["name"]
