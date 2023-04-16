@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from typing import Any, Generator, cast
 
 from .chatgpt import ChatGPT, Messages
+from ..chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
 
 
 @dataclass
@@ -84,29 +85,29 @@ class Discussion(ChatGPT):
         return message
 
     def run(self, messages: Messages) -> float:
-        if len(messages) < 3:
-            raise ValueError("The discussion must have at least 3 messages.")
-        system_message = messages[0]
-        if system_message["role"] != "theme":
-            raise ValueError(
-                "The first message for the discussion must be a theme."
-            )
-        system_message["role"] = "system"
-        gpt1 = messages[1]
-        if gpt1["role"] != "gpt1":
-            raise ValueError(
-                "The second message for the discussion must be a gpt1's role."
-            )
-        gpt1["role"] = "system"
-        gpt2 = messages[2]
-        if gpt2["role"] != "gpt2":
-            raise ValueError(
-                "The third message for the discussion must be a gpt2's role."
-            )
-        gpt2["role"] = "system"
-
-        gpt1_messages = [system_message, gpt1]
-        gpt2_messages = [system_message, gpt2]
+        theme = {}
+        gpt1 = {"role": "system", "content": "Please engage in the discussion as a supporter."}
+        gpt2 = {"role": "system", "content": "Please engage in the discussion as a opponent."}
+        for message in messages:
+            if message["role"] == "theme":
+                theme = message
+                theme["role"] = "system"
+            elif message["role"] == "gpt1":
+                gpt1 = message
+                gpt1["role"] = "system"
+            elif message["role"] == "gpt2":
+                gpt2 = message
+                gpt2["role"] = "system"
+            elif message["role"] in ["user", "system"]:
+                if theme:
+                    theme["content"] += "\n" + message["content"]
+                else:
+                    theme = message
+                    theme["role"] = "system"
+        if not theme or not gpt1 or not gpt2:
+            raise ChatGPTPromptWrapperError("The discussion must have a theme (or given by a message from the command line), gpt1, and gpt2 roles.")
+        gpt1_messages = [theme, gpt1]
+        gpt2_messages = [theme, gpt2]
 
         tokens1 = [
             self.num_tokens_from_message(message) for message in gpt1_messages
