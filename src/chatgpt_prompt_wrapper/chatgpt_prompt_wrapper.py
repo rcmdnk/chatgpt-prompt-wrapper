@@ -191,11 +191,7 @@ class ChatGPTPromptWrapper:
             )
 
         if (
-<<<<<<< HEAD
             self.cmd not in ["ask", "chat", "discuss"]
-=======
-            self.cmd not in ["ask", "chat", "discussion"]
->>>>>>> 0863852 (refactor: Add Stream class as a parent class of Chat and Discussion)
             and not self.config_file.is_file()
         ):
             raise ChatGPTPromptWrapperError(
@@ -214,11 +210,7 @@ class ChatGPTPromptWrapper:
             commands(config, self.log)
             return
 
-<<<<<<< HEAD
         cmds = ["ask", "chat", "discuss"] + [
-=======
-        cmds = ["ask", "chat", "discussion"] + [
->>>>>>> 0863852 (refactor: Add Stream class as a parent class of Chat and Discussion)
             x for x in config if x != "global"
         ]
         if self.cmd == "global":
