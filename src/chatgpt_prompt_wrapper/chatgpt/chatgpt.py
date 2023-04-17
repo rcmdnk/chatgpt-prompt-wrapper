@@ -39,7 +39,7 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
     frequency_penalty: float
         The penalty for the model to return the same token multiple times (-2 ~ 2).
     colors: dict[str, str]
-        The colors to use for the different roles.
+        The colors to use for the different names/roles.
     alias: dict[str, str]
         The aliases of role names.
     """
@@ -136,13 +136,13 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         # every reply is primed with <|start|>assistant<|message|>
         self.reply_tokens = 3
 
-    def add_color(self, text: str, role: str, size: int = 0) -> str:
+    def add_color(self, text: str, name: str, size: int = 0) -> str:
         if (
             sys.stdout.isatty()
-            and role in self.colors
-            and self.colors[role] in self.ansi_colors
+            and name in self.colors
+            and self.colors[name] in self.ansi_colors
         ):
-            text = f"\033[{self.ansi_colors[self.colors[role]]};1m{text:>{size}}\033[m"
+            text = f"\033[{self.ansi_colors[self.colors[name]]};1m{text:>{size}}\033[m"
         return text
 
     def check_prompt_tokens(self, prompt_tokens: int) -> None:
@@ -191,12 +191,10 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         return messages
 
     def get_name(self, message: dict[str, str]) -> str:
-        name = self.alias.get(message["role"], message["role"])
         if "name" in message:
-            if "gpt-3.5" in self.model:
-                name = message["name"]
-            else:
-                name = f"{message['name']} ({message['role']})"
+            name = message["name"]
+        else:
+            name = self.alias.get(message["role"], message["role"])
         return name
 
     def get_output(
@@ -205,7 +203,8 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         size: int = 0,
         add_linebreak: bool = False,
     ) -> str:
-        name = self.add_color(self.get_name(message), message["role"], size)
+        name = self.get_name(message)
+        name = self.add_color(name, name, size)
         lb = "\n" if add_linebreak else ""
         return f"{name}> {message['content']}{lb}"
 

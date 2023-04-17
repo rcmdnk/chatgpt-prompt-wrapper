@@ -1,6 +1,6 @@
 from .ask import Ask
 from .chat import Chat
 from .chatgpt import ChatGPT, Messages
-from .discussion import Discussion
+from .discuss import Discuss
 
-__all__ = ["ChatGPT", "Messages", "Ask", "Chat", "Discussion"]
+__all__ = ["ChatGPT", "Messages", "Ask", "Chat", "Discuss"]

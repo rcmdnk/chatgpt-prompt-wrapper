@@ -109,12 +109,12 @@ Please keep the cost in mind. You may want to set `tokens_limit`.
 
 You can define your command in the configuration files.
 
-A command can be in either `ask` mode, `chat` mode or `discussion` mode.
+A command can be in either `ask` mode, `chat` mode or \`discuss mode.
 
 - `ask` mode: Send a predefined prompt and a message from the command line and receive one answer.
 - `chat` mode: Start a chat with a predefined prompt if defined:
   - `chat` mode can be in either `multiline` mode or single (`no_multiline`) mode.
-- `discussion` mode: Start a discussion between two different ChatGPTs.
+- \`discuss mode: Start a discussion between two different ChatGPTs.
 
 #### File path
 
@@ -152,7 +152,7 @@ The options for each table can be:
 - Table of `alias`: Dictionary of role aliases. The default alias is: '`user' = 'User'`, `'system' = 'System'`, `'assistant' = 'Assistant'`.
 - List of `messages`: Dictionary of message, which must have `role` and `content` (message text).
   - For `ask`, `chat` modes, `role` must be one of `system`, `user` and `assistant`
-  - For `discussion` mode, three roles, `theme`, `gpt1` and `gpt2` are needed.
+  - For `discuss` mode, three roles, `theme`, `gpt1` and `gpt2` are needed.
 
 The options for ask mode:
 
@@ -217,7 +217,7 @@ content = "Let's enjoy a chat."
 
 
 [dd]
-discussion = true
+discuss = true
 
 [dd.names]
 gpt1 = "pros"

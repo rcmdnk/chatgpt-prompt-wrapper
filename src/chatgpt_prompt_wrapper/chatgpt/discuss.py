@@ -8,7 +8,7 @@ from .stream import Stream
 
 
 @dataclass
-class Discussion(Stream):
+class Discuss(Stream):
     """Discussion between ChatGPTs.
 
     Parameters
@@ -86,7 +86,7 @@ class Discussion(Stream):
         if not theme or not gpt1 or not gpt2:
             self.reset_no_line_break_log()
             raise ChatGPTPromptWrapperError(
-                "The discussion must have a theme (or given by a message from the command line), gpt1, and gpt2 roles."
+                "The discuss mode must have a theme (or given by a message from the command line), gpt1, and gpt2 roles."
             )
         gpt1_messages = [theme, gpt1]
         gpt2_messages = [theme, gpt2]

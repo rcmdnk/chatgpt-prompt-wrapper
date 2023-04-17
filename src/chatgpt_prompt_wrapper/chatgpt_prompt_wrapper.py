@@ -10,7 +10,7 @@ from typing import Any
 
 from .__version__ import __version__
 from .arg_parser import cli_help, parse_args, true_false_params, true_params
-from .chatgpt import Ask, Chat, Discussion
+from .chatgpt import Ask, Chat, Discuss
 from .chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
 from .cmd import commands, cost, init
 from .config import get_config
@@ -132,16 +132,14 @@ class ChatGPTPromptWrapper:
         cmd_config["chat"] = (
             True if self.cmd == "chat" else cmd_config.get("chat", False)
         )
-        cmd_config["discussion"] = (
-            True
-            if self.cmd == "discussion"
-            else cmd_config.get("discussion", False)
+        cmd_config["discuss"] = (
+            True if self.cmd == "discuss" else cmd_config.get("discuss", False)
         )
         self.update_cmd_config(cmd_config)
 
         if (
             not cmd_config["chat"]
-            and not cmd_config["discussion"]
+            and not cmd_config["discuss"]
             and not cmd_config["messages"]
         ):
             raise ChatGPTPromptWrapperError(
@@ -151,11 +149,11 @@ class ChatGPTPromptWrapper:
         return cmd_config
 
     def run_chatgpt(self, config: dict[str, Any]) -> float:
-        cls: Ask | Chat | Discussion
+        cls: Ask | Chat | Discuss
         if config["chat"]:
             cls = Chat
-        elif config["discussion"]:
-            cls = Discussion
+        elif config["discuss"]:
+            cls = Discuss
         else:
             cls = Ask
         accepted_args = inspect.signature(cls.__init__).parameters  # type: ignore
@@ -193,7 +191,7 @@ class ChatGPTPromptWrapper:
             )
 
         if (
-            self.cmd not in ["ask", "chat", "discussion"]
+            self.cmd not in ["ask", "chat", "discuss"]
             and not self.config_file.is_file()
         ):
             raise ChatGPTPromptWrapperError(
@@ -212,7 +210,7 @@ class ChatGPTPromptWrapper:
             commands(config, self.log)
             return
 
-        cmds = ["ask", "chat", "discussion"] + [
+        cmds = ["ask", "chat", "discuss"] + [
             x for x in config if x != "global"
         ]
         if self.cmd == "global":
