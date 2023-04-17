@@ -128,7 +128,9 @@ class Discuss(Stream):
                     Generator[dict[str, Any], None, None],
                     self.completion(gpt1_messages, stream=True),
                 )
-                new_message = self.show_stream(response, max_size, name="gpt1")
+                new_message = self.show_stream(
+                    response, max_size, name=self.names.get("gpt1", "gpt1")
+                )
                 gpt1_messages.append(new_message)
                 tokens = self.num_tokens_from_message(new_message)
                 tokens1.append(tokens)
@@ -159,7 +161,9 @@ class Discuss(Stream):
                     Generator[dict[str, Any], None, None],
                     self.completion(gpt2_messages, stream=True),
                 )
-                new_message = self.show_stream(response, max_size, name="gpt2")
+                new_message = self.show_stream(
+                    response, max_size, name=self.names.get("gpt2", "gpt2")
+                )
                 gpt2_messages.append(new_message)
                 tokens = self.num_tokens_from_message(new_message)
                 tokens2.append(tokens)
