@@ -55,8 +55,11 @@ class Stream(ChatGPT):
                 self.log.warning(
                     "The reply was omitted due to the content filters.\n"
                 )
+<<<<<<< HEAD
         # Remove the name from the message, as it fails if it does not match '^[a-zA-Z0-9_-]{1,64}$'.
         del message["name"]
+=======
+>>>>>>> 0863852 (refactor: Add Stream class as a parent class of Chat and Discussion)
         self.log.info("\n")
         return message
 
