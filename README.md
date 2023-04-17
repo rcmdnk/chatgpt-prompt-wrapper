@@ -74,11 +74,13 @@ optional arguments:
 ```
 
 ```
+
 $ cg commands
 Available subcommands:
   Reserved commands:
     ask       : Ask w/o predefined prompt.
     chat      : Start chat w/o predefined prompt.
+    discuss   : Start a discussion between GPTs. Give a them as a message.
     init      : Initialize config file with an example command.
     cost      : Show estimated cost used until now.
     commands  : List up subcommands (show this).
@@ -93,7 +95,11 @@ Available subcommands:
 
 `ask` and `chat` are reserved commands for running simple interaction without a predefined prompt.
 
+- `ask`
+
 `cg ask <message>` returns the answer from ChatGPT for `message`.
+
+- `chat`
 
 `cg chat` starts a chat.
 
@@ -105,6 +111,19 @@ The oldest message will be dropped when the total tokens (including the reserved
 It means you will send almost the max length after a long conversation.
 Please keep the cost in mind. You may want to set `tokens_limit`.
 
+### Discuss
+
+`discuss` is another reserved command which start a discussion between two ChatGPTs.
+
+Two GPTs are ask to perform as:
+
+- Please engage in the discussion as a supporter.
+- Please engage in the discussion as a opponent.
+
+You input message will be a message and they start a discussion.
+
+Please push `Enter` to proceed a duscussion and `Ctrl-C` to quit a discussion.
+
 ### Configuration file
 
 You can define your command in the configuration files.
@@ -114,7 +133,7 @@ A command can be in either `ask` mode, `chat` mode or \`discuss mode.
 - `ask` mode: Send a predefined prompt and a message from the command line and receive one answer.
 - `chat` mode: Start a chat with a predefined prompt if defined:
   - `chat` mode can be in either `multiline` mode or single (`no_multiline`) mode.
-- \`discuss mode: Start a discussion between two different ChatGPTs.
+- `discuss` mode: Start a discussion between two different ChatGPTs.
 
 #### File path
 
