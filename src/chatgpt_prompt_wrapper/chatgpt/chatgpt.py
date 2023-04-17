@@ -199,9 +199,15 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
                 name = f"{message['name']} ({message['role']})"
         return name
 
-    def get_output(self, message: dict[str, str], size: int = 0) -> str:
+    def get_output(
+        self,
+        message: dict[str, str],
+        size: int = 0,
+        add_linebreak: bool = False,
+    ) -> str:
         name = self.add_color(self.get_name(message), message["role"], size)
-        return f"{name}> {message['content']}"
+        lb = "\n" if add_linebreak else ""
+        return f"{name}> {message['content']}{lb}"
 
     def completion(
         self, messages: Messages, stream: bool = False

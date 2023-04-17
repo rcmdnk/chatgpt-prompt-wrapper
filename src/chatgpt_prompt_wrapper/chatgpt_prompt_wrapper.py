@@ -133,7 +133,9 @@ class ChatGPTPromptWrapper:
             True if self.cmd == "chat" else cmd_config.get("chat", False)
         )
         cmd_config["discussion"] = (
-            True if self.cmd == "discussion" else cmd_config.get("discussion", False)
+            True
+            if self.cmd == "discussion"
+            else cmd_config.get("discussion", False)
         )
         self.update_cmd_config(cmd_config)
 
@@ -190,7 +192,10 @@ class ChatGPTPromptWrapper:
                 "Set OPEN_AI_API_KEY environment variable or give it by -k (--key) argument."
             )
 
-        if self.cmd not in ["ask", "chat", "discussion"] and not self.config_file.is_file():
+        if (
+            self.cmd not in ["ask", "chat", "discussion"]
+            and not self.config_file.is_file()
+        ):
             raise ChatGPTPromptWrapperError(
                 f"Configuration file {self.config_file} does not exist"
                 f"`ask` or `cht` subcommand can be used w/o configuration file."
@@ -207,7 +212,9 @@ class ChatGPTPromptWrapper:
             commands(config, self.log)
             return
 
-        cmds = ["ask", "chat", "discussion"] + [x for x in config if x != "global"]
+        cmds = ["ask", "chat", "discussion"] + [
+            x for x in config if x != "global"
+        ]
         if self.cmd == "global":
             raise ChatGPTPromptWrapperError("`global` is not a subcommand.")
         if self.cmd not in cmds:

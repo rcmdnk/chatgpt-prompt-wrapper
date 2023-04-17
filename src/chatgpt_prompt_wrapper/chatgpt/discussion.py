@@ -2,12 +2,13 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any, Generator, cast
 
-from .chatgpt import ChatGPT, Messages
 from ..chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
+from .chatgpt import Messages
+from .stream import Stream
 
 
 @dataclass
-class Discussion(ChatGPT):
+class Discussion(Stream):
     """Discussion between ChatGPTs.
 
     Parameters
@@ -54,40 +55,18 @@ class Discussion(ChatGPT):
             handler.terminator = default_terminator
         del self.default_terminators
 
-    def show_stream(
-        self,
-        response: Generator[dict[str, Any], None, None],
-        max_size: int,
-        role: str,
-    ) -> dict[str, str]:
-        message = {"role": "assistant", "content": ""}
-        self.log.info(
-            self.get_output(
-                {"role": role, "name": self.names[role], "content": ""},
-                max_size,
-            )
-        )
-        for chunk in response:
-            delta = chunk["choices"][0]["delta"]
-            if "content" in delta:
-                self.log.info(delta["content"])
-                message["content"] += delta["content"]
-            finish_reason = chunk["choices"][0]["finish_reason"]
-            if finish_reason == "length":
-                self.log.warning(
-                    "The reply was truncated due to the tokens limit.\n"
-                )
-            elif finish_reason == "content_filter":
-                self.log.warning(
-                    "The reply was omitted due to the content filters.\n"
-                )
-        self.log.info("\n")
-        return message
-
-    def run(self, messages: Messages) -> float:
+    def prepare_messages(
+        self, messages: Messages
+    ) -> tuple[Messages, Messages, list[int], list[int]]:
         theme = {}
-        gpt1 = {"role": "system", "content": "Please engage in the discussion as a supporter."}
-        gpt2 = {"role": "system", "content": "Please engage in the discussion as a opponent."}
+        gpt1 = {
+            "role": "system",
+            "content": "Please engage in the discussion as a supporter.",
+        }
+        gpt2 = {
+            "role": "system",
+            "content": "Please engage in the discussion as a opponent.",
+        }
         for message in messages:
             if message["role"] == "theme":
                 theme = message
@@ -105,7 +84,10 @@ class Discussion(ChatGPT):
                     theme = message
                     theme["role"] = "system"
         if not theme or not gpt1 or not gpt2:
-            raise ChatGPTPromptWrapperError("The discussion must have a theme (or given by a message from the command line), gpt1, and gpt2 roles.")
+            self.reset_no_line_break_log()
+            raise ChatGPTPromptWrapperError(
+                "The discussion must have a theme (or given by a message from the command line), gpt1, and gpt2 roles."
+            )
         gpt1_messages = [theme, gpt1]
         gpt2_messages = [theme, gpt2]
 
@@ -121,12 +103,17 @@ class Discussion(ChatGPT):
         prompt_tokens2 = self.num_total_tokens(sum(tokens2))
         self.check_prompt_tokens(prompt_tokens2)
 
+        return gpt1_messages, gpt2_messages, tokens1, tokens2
+
+    def run_main(self, messages: Messages) -> tuple[int, float]:
+
+        gpt1_messages, gpt2_messages, tokens1, tokens2 = self.prepare_messages(
+            messages
+        )
         max_size = max(10, *[len(x) for x in self.names])
-        self.log.info(f"Theme: {messages[0]['content']}")
+        self.log.info(f"Theme: {messages[0]['content']}\n")
 
         cost = 0.0
-        self.finish_chat = False
-        self.set_no_line_break_log()
         try:
             while True:
                 _ = input()
@@ -141,7 +128,7 @@ class Discussion(ChatGPT):
                     Generator[dict[str, Any], None, None],
                     self.completion(gpt1_messages, stream=True),
                 )
-                new_message = self.show_stream(response, max_size, "gpt1")
+                new_message = self.show_stream(response, max_size, name="gpt1")
                 gpt1_messages.append(new_message)
                 tokens = self.num_tokens_from_message(new_message)
                 tokens1.append(tokens)
@@ -172,7 +159,7 @@ class Discussion(ChatGPT):
                     Generator[dict[str, Any], None, None],
                     self.completion(gpt2_messages, stream=True),
                 )
-                new_message = self.show_stream(response, max_size, "gpt2")
+                new_message = self.show_stream(response, max_size, name="gpt2")
                 gpt2_messages.append(new_message)
                 tokens = self.num_tokens_from_message(new_message)
                 tokens2.append(tokens)
@@ -193,7 +180,4 @@ class Discussion(ChatGPT):
                 )
         except KeyboardInterrupt:
             pass
-        self.reset_no_line_break_log()
-        message = {"role": "assistant", "content": "Bye!"}
-        self.log.info(self.get_output(message, max_size))
-        return cost
+        return max_size, cost
