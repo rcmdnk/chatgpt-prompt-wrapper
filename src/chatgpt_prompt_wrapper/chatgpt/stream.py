@@ -55,8 +55,6 @@ class Stream(ChatGPT):
                 self.log.warning(
                     "The reply was omitted due to the content filters.\n"
                 )
-            elif finish_reason in ["stop"]:
-                self.log.info("\n")
 
         # Remove the name from the message, as it fails if it does not match '^[a-zA-Z0-9_-]{1,64}$'.
         if "name" in message:
