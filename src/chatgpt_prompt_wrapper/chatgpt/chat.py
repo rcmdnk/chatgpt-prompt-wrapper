@@ -26,7 +26,7 @@ class Chat(Stream):
         The command to exit the chat.
     """
 
-    multiline: bool = True
+    multiline: bool = False
     vi: bool = False
     chat_exit_cmd: list[str] = field(
         default_factory=lambda: ["bye", "bye!", "exit", "quit"]
@@ -38,15 +38,15 @@ class Chat(Stream):
 
     def make_prompt(self) -> None:
         if self.multiline:
-            toolbar_text = f"Send text: <b>[Meta+Enter]</b>, <b>[Esc]</b><b>[Enter]</b>. Exit chat: <b>[Ctrl-C]</b>, <b>{self.chat_exit_cmd[0]}</b>, "
+            toolbar_text = f"Send text: <b>[Meta+Enter]</b>, <b>[Esc]</b><b>[Enter]</b>. Exit chat: <b>[Ctrl-C]</b>, <b>{self.chat_exit_cmd[0]}</b>. "
         else:
             toolbar_text = (
-                f"Exit chat: <b>[Ctrl-C]</b>, <b>{self.chat_exit_cmd[0]}</b>,"
+                f"Exit chat: <b>[Ctrl-C]</b>, <b>{self.chat_exit_cmd[0]}</b>. "
             )
         if self.vi:
-            toolbar_text += "<b>Vi mode</b>."
+            toolbar_text += "<b>Working with Vi mode</b>."
         else:
-            toolbar_text += "<b>emacs mode</b>."
+            toolbar_text += "<b>Working with Emacs mode</b>."
         toolbar_view = HTML(toolbar_text)
 
         def bottom_toolbar() -> HTML:
@@ -58,9 +58,11 @@ class Chat(Stream):
             return ""
 
         style_dict = {"": ""}  # Text (normal color)
+        pre_defined = []
         for k, v in self.colors.items():
-            if v in self.ansi_colors:
+            if v in self.ansi_colors and v.lower() not in pre_defined:
                 style_dict[k] = f"ansi{v} bold"
+                pre_defined.append(v.lower())
         style = Style.from_dict(style_dict)
 
         bindings = KeyBindings()
@@ -98,39 +100,46 @@ class Chat(Stream):
             )
 
         cost = 0.0
-        while True:
-            user = [("class:user", f"{self.alias['user']:>{max_size}}> ")]
-            text = prompt(user, **self.prompt_params)  # type: ignore
-            if self.finish_chat:
-                break
-            message = {"role": "user", "content": text}
-            if message["content"].lower() in self.chat_exit_cmd:
-                break
-            message_tokens = self.num_tokens_from_message(message)
-            if (
-                self.num_total_tokens(message_tokens)
-                > self.tokens_limit - self.min_max_tokens
-            ):
-                self.log.warning("Input is too long, try shorter.\n")
-                continue
-            messages.append(message)
-            tokens.append(message_tokens)
-            while (
-                prompt_tokens := self.num_total_tokens(sum(tokens))
-            ) > self.tokens_limit - self.min_max_tokens:
-                messages = messages[1:]
-                tokens = tokens[1:]
-            cost += self.prices[self.model][0] * prompt_tokens / 1000.0
-            response = cast(
-                Generator[dict[str, Any], None, None],
-                self.completion(messages, stream=True),
-            )
-            new_message = self.show_stream(response, max_size)
-            messages.append(new_message)
-            tokens.append(self.num_tokens_from_message(new_message))
-            cost += (
-                self.prices[self.model][1]
-                * self.num_tokens_from_message(new_message, only_content=True)
-                / 1000.0
-            )
+        try:
+            while True:
+                user = [("class:user", f"{self.alias['user']:>{max_size}}> ")]
+                text = prompt(user, **self.prompt_params)  # type: ignore
+                self.log.info("\n")
+                if self.finish_chat:
+                    break
+                message = {"role": "user", "content": text}
+                if message["content"].lower() in self.chat_exit_cmd:
+                    break
+                message_tokens = self.num_tokens_from_message(message)
+                if (
+                    self.num_total_tokens(message_tokens)
+                    > self.tokens_limit - self.min_max_tokens
+                ):
+                    self.log.warning("Input is too long, try shorter.\n")
+                    continue
+                messages.append(message)
+                tokens.append(message_tokens)
+                while (
+                    prompt_tokens := self.num_total_tokens(sum(tokens))
+                ) > self.tokens_limit - self.min_max_tokens:
+                    messages = messages[1:]
+                    tokens = tokens[1:]
+                cost += self.prices[self.model][0] * prompt_tokens / 1000.0
+                response = cast(
+                    Generator[dict[str, Any], None, None],
+                    self.completion(messages, stream=True),
+                )
+                new_message = self.show_stream(response, max_size)
+                self.log.info("\n")
+                messages.append(new_message)
+                tokens.append(self.num_tokens_from_message(new_message))
+                cost += (
+                    self.prices[self.model][1]
+                    * self.num_tokens_from_message(
+                        new_message, only_content=True
+                    )
+                    / 1000.0
+                )
+        except KeyboardInterrupt:
+            self.log.info("\n")
         return max_size, cost

@@ -107,6 +107,10 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         }
         self.set_model(self.model)
 
+        for k, v in self.alias.items():
+            if v not in self.colors and k in self.colors:
+                self.colors[v] = self.colors[k]
+
     def set_model(self, model: str) -> None:
         self.model = self.model
         # Total number of tokens must be maximum tokens for model - 1
@@ -136,13 +140,13 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         # every reply is primed with <|start|>assistant<|message|>
         self.reply_tokens = 3
 
-    def add_color(self, text: str, name: str, size: int = 0) -> str:
+    def add_color(self, text: str, name: str) -> str:
         if (
             sys.stdout.isatty()
             and name in self.colors
             and self.colors[name] in self.ansi_colors
         ):
-            text = f"\033[{self.ansi_colors[self.colors[name]]};1m{text:>{size}}\033[m"
+            text = f"\033[{self.ansi_colors[self.colors[name]]};1m{text}\033[m"
         return text
 
     def check_prompt_tokens(self, prompt_tokens: int) -> None:
@@ -204,7 +208,7 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         add_linebreak: bool = False,
     ) -> str:
         name = self.get_name(message)
-        name = self.add_color(name, name, size)
+        name = self.add_color(f"{name:>{size}}", name)
         lb = "\n" if add_linebreak else ""
         return f"{name}> {message['content']}{lb}"
 
