@@ -34,6 +34,9 @@ class Discuss(Stream):
 
     def __post_init__(self) -> None:
         super().__post_init__()
+        for k, v in self.names.items():
+            if v not in self.colors and k in self.colors:
+                self.colors[v] = self.colors[k]
 
     def set_no_line_break_log(self) -> None:
         self.default_terminators = [
@@ -184,5 +187,5 @@ class Discuss(Stream):
                     / 1000.0
                 )
         except KeyboardInterrupt:
-            pass
+            self.log.info("\n")
         return max_size, cost

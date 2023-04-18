@@ -128,11 +128,11 @@ Please push `Enter` to proceed a duscussion and `Ctrl-C` to quit a discussion.
 
 You can define your command in the configuration files.
 
-A command can be in either `ask` mode, `chat` mode or \`discuss mode.
+A command can be in either `ask` mode, `chat` mode or `discuss` mode.
 
 - `ask` mode: Send a predefined prompt and a message from the command line and receive one answer.
 - `chat` mode: Start a chat with a predefined prompt if defined:
-  - `chat` mode can be in either `multiline` mode or single (`no_multiline`) mode.
+  - `chat` mode can be either `multiline` or single (`no_multiline`), and `vim` or `emacs`.
 - `discuss` mode: Start a discussion between two different ChatGPTs.
 
 #### File path
@@ -180,8 +180,8 @@ The options for ask mode:
 
 The options for chat mode:
 
-- `multiline`: Set `true` to hide prompt for non chat command (default).
-- `no_multiline`: Set `true` to hide prompt for non chat command.
+- `multiline`: Set `true` to hide prompt for non chat command.
+- `no_multiline`: Set `true` to hide prompt for non chat command (default).
 - `vi`: Set `true` to use vi mode.
 - `emacs`: Set `true` to use emacs mode (default).
 

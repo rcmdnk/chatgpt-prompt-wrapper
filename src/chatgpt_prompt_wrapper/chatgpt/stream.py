@@ -59,7 +59,9 @@ class Stream(ChatGPT):
                 self.log.info("\n")
 
         # Remove the name from the message, as it fails if it does not match '^[a-zA-Z0-9_-]{1,64}$'.
-        del message["name"]
+        if "name" in message:
+            del message["name"]
+        self.log.info("\n")
         return message
 
     def run_main(self, messages: Messages) -> tuple[int, float]:
