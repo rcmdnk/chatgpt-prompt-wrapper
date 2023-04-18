@@ -158,7 +158,7 @@ which are enabled for all commands if the command does not have the correspondin
 The options for each table can be:
 
 - `description`: Description of the command.
-- `chat`: Set `true` to switch to `chat` mode (default is `ask` mode, only one exchange).
+- `mode`: Set `ask`, `chat` or `discuss`. (default is `ask` mode.)
 - `show_cost`: Set `true` to show the cost at the end of the command.
 - `model`: The model to use (default: "gpt-3.5-turbo").
 - `max_tokens`: The maximum number of tokens to generate in the chat completion. Set 0 to use the maximum values for the model. (default: 0)
@@ -229,14 +229,14 @@ content = "You are an expert python programmer. Answer the following questions."
 
 [enjoy_chat]
 description = "Chat example with a predefined prompt."
-chat = true
+mode = 'chat'
 [[chat.messages]]
 role = "user"
 content = "Let's enjoy a chat."
 
 
 [dd]
-discuss = true
+mode = 'discuss'
 
 [dd.names]
 gpt1 = "pros"
@@ -279,68 +279,7 @@ Command examples:
 
 ### Git commit by ChatGPT
 
-Prepare the following script with name like `git-c`
-and put it in the directory under the PATH.
-
-```bash
-#!/usr/bin/env bash
-
-if ! type cg >/dev/null 2>&1; then
-  echo "cg command not found. Please install cg command."
-  echo "    $ pip install chatgpt-prompt-wrapper"
-  exit 1
-fi
-
-if [ "$1" = "-a" ];then
-  git add -u
-fi
-
-git hook run --ignore-missing pre-commit
-if [ $? -ne 0 ]; then
-  exit 1
-fi
-
-prompt="
-Please make git commit messages for the following diff output.
-
-Each commit message must be one line starting with one of the following words.
-
-* feat: (new feature for the user, not a new feature for build script)
-* fix: (bug fix for the user, not a fix to a build script)
-* docs: (changes to the documentation)
-* style: (formatting, missing semi colons, etc; no production code change)
-* refactor: (refactoring production code, eg. renaming a variable)
-* test: (adding missing tests, refactoring tests; no production code change)
-* chore: (updating grunt tasks etc; no production code change)
-
-
-### diff
-
-$(git diff --cached)
-"
-
-message="$(cg ask "$prompt")
-
-# feat: (new feature for the user, not a new feature for build script)
-# fix: (bug fix for the user, not a fix to a build script)
-# docs: (changes to the documentation)
-# style: (formatting, missing semi colons, etc; no production code change)
-# refactor: (refactoring production code, eg. renaming a variable)
-# test: (adding missing tests, refactoring tests; no production code change)
-# chore: (updating grunt tasks etc; no production code change)
-#
-# Ref: https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716
-"
-
-git commit --no-verify -e -m "$message"
-```
-
-Now you can use `git c` command.
-
-If any updates are staged, run `git c` and the git opens the editor for the commit
-with commit messages made by ChatGPT.
-
-`-a` option can be used as same as `git commit -a`
+See [git-gpt-commit](https://github.com/rcmdnk/git-gpt-commit).
 
 ## Development
 

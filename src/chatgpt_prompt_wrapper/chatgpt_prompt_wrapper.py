@@ -129,33 +129,37 @@ class ChatGPTPromptWrapper:
     def get_cmd_config(self, config: dict[str, Any]) -> dict[str, Any]:
         cmd_config = config.get("global", {})
         cmd_config.update(config.get(self.cmd, {}))
-        cmd_config["chat"] = (
-            True if self.cmd == "chat" else cmd_config.get("chat", False)
-        )
-        cmd_config["discuss"] = (
-            True if self.cmd == "discuss" else cmd_config.get("discuss", False)
-        )
+
+        cmd_config["mode"] = cmd_config.get("mode", "ask")
+        if self.cmd in ["ask", "chat", "discuss"]:
+            cmd_config["mode"] = self.cmd
+
         self.update_cmd_config(cmd_config)
 
-        if (
-            not cmd_config["chat"]
-            and not cmd_config["discuss"]
-            and not cmd_config["messages"]
-        ):
-            raise ChatGPTPromptWrapperError(
-                "This subcommand (ask mode) does not predefined prompt and need input message."
-            )
+        if not cmd_config["messages"]:
+            if cmd_config["mode"] == "ask":
+                raise ChatGPTPromptWrapperError(
+                    "This subcommand (ask mode) does not predefined prompt and need input message."
+                )
+            elif self.cmd == "discuss":
+                raise ChatGPTPromptWrapperError(
+                    "This subcommand (discussion mode) needs input message as a theme."
+                )
 
         return cmd_config
 
     def run_chatgpt(self, config: dict[str, Any]) -> float:
         cls: Ask | Chat | Discuss
-        if config["chat"]:
+        if config["mode"] == "ask":
+            cls = Ask
+        elif config["mode"] == "chat":
             cls = Chat
-        elif config["discuss"]:
+        elif config["mode"] == "discuss":
             cls = Discuss
         else:
-            cls = Ask
+            raise ChatGPTPromptWrapperError(
+                f"Invalid mode: {config['mode']}. Please choose from ask, chat, discuss."
+            )
         accepted_args = inspect.signature(cls.__init__).parameters  # type: ignore
         params = {k: v for k, v in config.items() if k in accepted_args}
         cost_data_this = cls(**params).run(config["messages"])  # type: ignore

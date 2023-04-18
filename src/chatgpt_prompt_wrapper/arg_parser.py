@@ -54,22 +54,22 @@ def get_arg_parser() -> ArgumentParser:
     )
     arg_parser.add_argument(
         "--show",
-        help="Show prompt for `ask` command.",
+        help="Show prompt for `ask` mode.",
         action="store_true",
     )
     arg_parser.add_argument(
         "--hide",
-        help="Hide prompt for `ask` command.",
+        help="Hide prompt for `ask` mode.",
         action="store_true",
     )
     arg_parser.add_argument(
         "--multiline",
-        help="Use multiline input for `chat` command.",
+        help="Use multiline input for `chat` mode.",
         action="store_true",
     )
     arg_parser.add_argument(
         "--no_multiline",
-        help="Use single line input for `chat` command.",
+        help="Use single line input for `chat` mode.",
         action="store_true",
     )
     arg_parser.add_argument(
