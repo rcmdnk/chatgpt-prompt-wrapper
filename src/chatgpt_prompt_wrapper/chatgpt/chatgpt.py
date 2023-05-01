@@ -159,7 +159,6 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
     def num_tokens_from_message(
         self, message: dict[str, str], only_content: bool = False
     ) -> int:
-
         if only_content:
             return len(self.encoding.encode(message["content"]))
 

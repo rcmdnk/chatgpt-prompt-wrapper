@@ -109,7 +109,6 @@ class Discuss(Stream):
         return gpt1_messages, gpt2_messages, tokens1, tokens2
 
     def run_main(self, messages: Messages) -> tuple[int, float]:
-
         gpt1_messages, gpt2_messages, tokens1, tokens2 = self.prepare_messages(
             messages
         )
