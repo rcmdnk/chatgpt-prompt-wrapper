@@ -73,6 +73,7 @@ scripts_are_modules = true
 install_types = true
 non_interactive = true
 allow_subclassing_any = true
+disallow_untyped_calls = false
 
 [tool.poetry.scripts]
 cg = "chatgpt_prompt_wrapper:main"

@@ -16,10 +16,10 @@ from .cmd import commands, cost, init
 from .config import get_config
 from .log_formatter import get_logger
 
-try:
+if sys.version_info >= (3, 11):
     import tomllib
-except ModuleNotFoundError:
-    import tomli as tomllib  # type: ignore
+else:
+    import tomli as tomllib
 
 
 @dataclass
@@ -173,7 +173,7 @@ class ChatGPTPromptWrapper:
         cost_data = {}
         if cost_file.exists():
             with open(cost_file, "r") as f:
-                cost_data = {k: v for k, v in sorted(json.load(f).items())}
+                cost_data = dict(sorted(json.load(f).items()))
         month = datetime.now().strftime("%Y%m")
         cost_data[month] = cost_data.get(month, 0) + new_cost
         cost_file.parent.mkdir(parents=True, exist_ok=True)
