@@ -1467,13 +1467,13 @@ plugins = ["importlib-metadata"]
 
 [[package]]
 name = "pyproject-pre-commit"
-version = "0.0.12"
+version = "0.0.13"
 description = "pre-commit hooks for python projects using pyproject.toml."
 optional = false
 python-versions = ">=3.8.1,<3.12"
 files = [
-    {file = "pyproject_pre_commit-0.0.12-py3-none-any.whl", hash = "sha256:2d9776140699a1822e8a53c54f0d17baf7a395c7a3b89d03e8381b1904528e19"},
-    {file = "pyproject_pre_commit-0.0.12.tar.gz", hash = "sha256:e6b1bc220b27582200d60af1256bc42f9b1269f3449d3b5e5ef732fc7e9f0df5"},
+    {file = "pyproject_pre_commit-0.0.13-py3-none-any.whl", hash = "sha256:4eb0d8c4b0624b14fee7bbf4594e6164b9678a93fb6a5b1f2268a369d902cebf"},
+    {file = "pyproject_pre_commit-0.0.13.tar.gz", hash = "sha256:153bdb34ae7e38ec6cf472fb70bee0ac48e949f2e6dfa90ab8830b1a9e30e7b8"},
 ]
 
 [package.dependencies]
@@ -1503,7 +1503,7 @@ mypy = "1.3.0"
 pep8-naming = "0.13.3"
 pre-commit = "3.3.2"
 pycodestyle = "2.10.0"
-shellcheck-py = "0.9.0.2"
+shellcheck-py = "0.9.0.5"
 
 [[package]]
 name = "pytest"
@@ -1865,15 +1865,15 @@ testing-integration = ["build[virtualenv]", "filelock (>=3.4.0)", "jaraco.envs (
 
 [[package]]
 name = "shellcheck-py"
-version = "0.9.0.2"
+version = "0.9.0.5"
 description = "Python wrapper around invoking shellcheck (https://www.shellcheck.net/)"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "shellcheck_py-0.9.0.2-py2.py3-none-macosx_10_15_x86_64.whl", hash = "sha256:ddb9b9fd4750d726b9ac24df8b63599dc742c8749477bcdfd4ed639b22de21ae"},
-    {file = "shellcheck_py-0.9.0.2-py2.py3-none-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bbaaba3044d266e793964e391c8caad4fcccafcd64e63de24e9b87a31a0c7aff"},
-    {file = "shellcheck_py-0.9.0.2-py2.py3-none-win_amd64.whl", hash = "sha256:6a1be188d0a7183fc4bfcf52087512d879519bb6beb67d76927e0331edb45eb1"},
-    {file = "shellcheck_py-0.9.0.2.tar.gz", hash = "sha256:1c29aa5864cc937f037b84b8e6b13b7016d25a45f7a07a1f1f16d38e387c76b4"},
+    {file = "shellcheck_py-0.9.0.5-py2.py3-none-macosx_10_15_x86_64.whl", hash = "sha256:98d9668f72afeb65c7a8e60f02202b00d64f2de9e9b103dfb5d0067ded391ef3"},
+    {file = "shellcheck_py-0.9.0.5-py2.py3-none-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:65ddc19a1ae4249802a663682834ed452f9e75615d58c3ce6b3f1b0d2a484f32"},
+    {file = "shellcheck_py-0.9.0.5-py2.py3-none-win_amd64.whl", hash = "sha256:9f50a7354f355753f365668e79aa3d410cb6f4d9358e4c5d8464018cf2b4863a"},
+    {file = "shellcheck_py-0.9.0.5.tar.gz", hash = "sha256:50b2057fac7227fd83614a9bf9d123042e53e03d92f2c7f1778448a8937f07a4"},
 ]
 
 [[package]]
@@ -2166,4 +2166,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "d6856c3ab13cbff0fe9598ff303db170742d1d274db2d89ef616f2a98004efba"
+content-hash = "ca4673e194922cdced4d227d51b837459a3588677c18f22ef7a7e717af9010af"
