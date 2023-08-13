@@ -16,7 +16,7 @@ tomli = { version = "2.0.1", python = "<3.11"}
 openai = "0.27.8"
 tiktoken = "0.4.0"
 docstring-inheritance = "1.1.1"
-prompt-toolkit = "3.0.38"
+prompt-toolkit = "3.0.39"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "7.3.2"
