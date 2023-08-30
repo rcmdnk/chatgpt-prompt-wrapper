@@ -89,10 +89,15 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         self.model_max_tokens = {
             "gpt-4": 8192,
             "gpt-4-0314": 8192,
+            "gpt-4-0613": 8192,
             "gpt-4-32k": 32768,
             "gpt-4-32k-0314": 32768,
+            "gpt-4-32k-0613": 32768,
             "gpt-3.5-turbo": 4096,
             "gpt-3.5-turbo-0301": 4096,
+            "gpt-3.5-turbo-0613": 4096,
+            "gpt-3.5-turbo-16k": 16384,
+            "gpt-3.5-turbo-16k-0613": 16384,
         }
 
         # prices / 1K tokens in USD, (Prompt, Completion)
@@ -100,10 +105,15 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         self.prices = {
             "gpt-4": (0.03, 0.06),
             "gpt-4-0314": (0.03, 0.06),
+            "gpt-4-0613": (0.03, 0.06),
             "gpt-4-32k": (0.06, 0.12),
             "gpt-4-32k-0314": (0.06, 0.12),
-            "gpt-3.5-turbo": (0.002, 0.002),
-            "gpt-3.5-turbo-0301": (0.002, 0.002),
+            "gpt-4-32k-0613": (0.06, 0.12),
+            "gpt-3.5-turbo": (0.0015, 0.002),
+            "gpt-3.5-turbo-0301": (0.0015, 0.002),
+            "gpt-3.5-turbo-0613": (0.0015, 0.002),
+            "gpt-3.5-turbo-16k": (0.003, 0.004),
+            "gpt-3.5-turbo-16k-0613": (0.003, 0.004),
         }
         self.set_model(self.model)
 
