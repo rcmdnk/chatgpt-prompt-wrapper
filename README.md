@@ -169,6 +169,8 @@ The options for each table can be:
 - `presence_penalty`: The penalty for the model to return the same token (-2 ~ 2). (default: 0)
 - `frequency_penalty`: The penalty for the model to return the same token multiple times (-2 ~ 2). (default: 0)
 - Table of `alias`: Dictionary of role aliases. The default alias is: '`user' = 'User'`, `'system' = 'System'`, `'assistant' = 'Assistant'`.
+- `model_max_tokens`: Additional or updated model's max_token definitions.
+- `price`: Additional or updated model's price definitions.
 - List of `messages`: Dictionary of message, which must have `role` and `content` (message text).
   - For `ask`, `chat` modes, `role` must be one of `system`, `user` and `assistant`
   - For `discuss` mode, three roles, `theme`, `gpt1` and `gpt2` are needed.
@@ -194,6 +196,16 @@ Here is a example configuration:
 # Global configuration
 # `global` is special name and not a subcommand
 model = 'gpt-3.5-turbo'
+
+# Following model_max_tokens and prices are pre-defined in
+# https://github.com/rcmdnk/chatgpt-prompt-wrapper/blob/main/src/chatgpt_prompt_wrapper/chatgpt/chatgpt.py
+# If you find new model or price change, you can overwrite these variables in config as below.
+
+[global.model_max_tokens]
+"gpt-3.5-turbo-16k" = 16384
+
+[global.prices]
+"gpt-3.5-turbo-16k" = [0.003, 0.004]
 
 [test]
 # Example command to test the OpenAI API, taken from below.

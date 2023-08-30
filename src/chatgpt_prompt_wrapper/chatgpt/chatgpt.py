@@ -42,6 +42,10 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         The colors to use for the different names/roles.
     alias: dict[str, str]
         The aliases of role names.
+    model_max_tokens: dict[str, int]
+        The maximum tokens for each model.
+    prices: dict[str, tuple[float, float]]
+        The prices for each model.
     """
 
     key: str
@@ -67,6 +71,8 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
             "assistant": "Assistant",
         }
     )
+    model_max_tokens: dict[str, int] = field(default_factory=dict)
+    prices: dict[str, tuple[float, float]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         self.log = logging.getLogger(__name__)
@@ -86,35 +92,48 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
         }
 
         # Ref: https://platform.openai.com/docs/models/overview
-        self.model_max_tokens = {
-            "gpt-4": 8192,
-            "gpt-4-0314": 8192,
-            "gpt-4-0613": 8192,
-            "gpt-4-32k": 32768,
-            "gpt-4-32k-0314": 32768,
-            "gpt-4-32k-0613": 32768,
-            "gpt-3.5-turbo": 4096,
-            "gpt-3.5-turbo-0301": 4096,
-            "gpt-3.5-turbo-0613": 4096,
-            "gpt-3.5-turbo-16k": 16384,
-            "gpt-3.5-turbo-16k-0613": 16384,
-        }
+        self.model_max_tokens.update(
+            {
+                k: v
+                for k, v in {
+                    "gpt-4": 8192,
+                    "gpt-4-0314": 8192,
+                    "gpt-4-0613": 8192,
+                    "gpt-4-32k": 32768,
+                    "gpt-4-32k-0314": 32768,
+                    "gpt-4-32k-0613": 32768,
+                    "gpt-3.5-turbo": 4096,
+                    "gpt-3.5-turbo-0301": 4096,
+                    "gpt-3.5-turbo-0613": 4096,
+                    "gpt-3.5-turbo-16k": 16384,
+                    "gpt-3.5-turbo-16k-0613": 16384,
+                }.items()
+                if k not in self.model_max_tokens
+            }
+        )
 
         # prices / 1K tokens in USD, (Prompt, Completion)
         # Ref: https://openai.com/pricing#language-models
-        self.prices = {
-            "gpt-4": (0.03, 0.06),
-            "gpt-4-0314": (0.03, 0.06),
-            "gpt-4-0613": (0.03, 0.06),
-            "gpt-4-32k": (0.06, 0.12),
-            "gpt-4-32k-0314": (0.06, 0.12),
-            "gpt-4-32k-0613": (0.06, 0.12),
-            "gpt-3.5-turbo": (0.0015, 0.002),
-            "gpt-3.5-turbo-0301": (0.0015, 0.002),
-            "gpt-3.5-turbo-0613": (0.0015, 0.002),
-            "gpt-3.5-turbo-16k": (0.003, 0.004),
-            "gpt-3.5-turbo-16k-0613": (0.003, 0.004),
-        }
+        self.prices.update(
+            {
+                k: v
+                for k, v in {
+                    "gpt-4": (0.03, 0.06),
+                    "gpt-4-0314": (0.03, 0.06),
+                    "gpt-4-0613": (0.03, 0.06),
+                    "gpt-4-32k": (0.06, 0.12),
+                    "gpt-4-32k-0314": (0.06, 0.12),
+                    "gpt-4-32k-0613": (0.06, 0.12),
+                    "gpt-3.5-turbo": (0.0015, 0.002),
+                    "gpt-3.5-turbo-0301": (0.0015, 0.002),
+                    "gpt-3.5-turbo-0613": (0.0015, 0.002),
+                    "gpt-3.5-turbo-16k": (0.003, 0.004),
+                    "gpt-3.5-turbo-16k-0613": (0.003, 0.004),
+                }.items()
+                if k not in self.prices
+            }
+        )
+
         self.set_model(self.model)
 
         for k, v in self.alias.items():
