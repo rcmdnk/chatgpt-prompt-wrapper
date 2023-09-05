@@ -149,7 +149,7 @@ class ChatGPTPromptWrapper:
         return cmd_config
 
     def run_chatgpt(self, config: dict[str, Any]) -> float:
-        cls: Ask | Chat | Discuss
+        cls: type[Ask | Chat | Discuss]
         if config["mode"] == "ask":
             cls = Ask
         elif config["mode"] == "chat":
@@ -160,9 +160,9 @@ class ChatGPTPromptWrapper:
             raise ChatGPTPromptWrapperError(
                 f"Invalid mode: {config['mode']}. Please choose from ask, chat, discuss."
             )
-        accepted_args = inspect.signature(cls.__init__).parameters  # type: ignore
+        accepted_args = inspect.signature(cls.__init__).parameters
         params = {k: v for k, v in config.items() if k in accepted_args}
-        cost_data_this = cls(**params).run(config["messages"])  # type: ignore
+        cost_data_this = cls(**params).run(config["messages"])
         return cost_data_this
 
     def update_cost(

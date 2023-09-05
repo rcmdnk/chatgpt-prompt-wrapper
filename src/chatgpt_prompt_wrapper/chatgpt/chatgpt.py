@@ -245,7 +245,7 @@ class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
     ) -> Generator[dict[str, Any], None, None] | dict[str, Any]:
         max_tokens = self.get_max_tokens(messages)
 
-        response = openai.ChatCompletion.create(
+        response = openai.ChatCompletion.create(  # type: ignore
             model=self.model,
             messages=messages,
             max_tokens=max_tokens,
