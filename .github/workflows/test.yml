@@ -76,7 +76,7 @@ jobs:
           else
             echo "DEBUG=0" >> $GITHUB_ENV
           fi
-      - uses: rcmdnk/python-action@v1
+      - uses: rcmdnk/python-action@v2
         with:
           coverage-push: "${{ env.IS_MAIN }}"
           coverage-push-condition: "branch=${{ env.MAIN_BRANCH }}, os=${{ env.MAIN_OS }}, python_version=${{ env.MAIN_PY_VER }}"
