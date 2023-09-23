@@ -93,9 +93,13 @@ class ChatGPTPromptWrapper:
         self.config_file = (
             Path(self.args.conf)
             if self.args.conf
-            else cf.conf(ext=self.config_file_ext, file_name=self.config_file_name)
+            else cf.conf(
+                ext=self.config_file_ext, file_name=self.config_file_name
+            )
         )
-        self.cost_file = cf.conf(ext=self.cost_file_ext, file_name=self.cost_file_name)
+        self.cost_file = cf.conf(
+            ext=self.cost_file_ext, file_name=self.cost_file_name
+        )
 
     def set_config_messages(self, config: dict[str, Any]) -> None:
         if "messages" not in config:
