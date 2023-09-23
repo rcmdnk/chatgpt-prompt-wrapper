@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-import conf_finder
+from conf_finder import ConfFinder
 
 from .__version__ import __version__
 from .arg_parser import cli_help, parse_args, true_false_params, true_params
@@ -89,16 +89,13 @@ class ChatGPTPromptWrapper:
         return False
 
     def set_files(self) -> None:
+        cf = ConfFinder(self.cmd_name)
         self.config_file = (
             Path(self.args.conf)
             if self.args.conf
-            else conf_finder.conf(
-                self.cmd_name, self.config_file_ext, self.config_file_name
-            )
+            else cf.conf(ext=self.config_file_ext, file_name=self.config_file_name)
         )
-        self.cost_file = conf_finder.conf(
-            self.cmd_name, self.cost_file_ext, self.cost_file_name
-        )
+        self.cost_file = cf.conf(ext=self.cost_file_ext, file_name=self.cost_file_name)
 
     def set_config_messages(self, config: dict[str, Any]) -> None:
         if "messages" not in config:
