@@ -1,19 +1,3 @@
-import os
-from pathlib import Path
-
-
-def get_config(dir_name: str, file_name: str) -> Path:
-    xdg_config_home = Path(
-        os.getenv("XDG_CONFIG_HOME", "~/.config")
-    ).expanduser()
-    if (xdg_config_home / dir_name).is_dir():
-        return xdg_config_home / dir_name / file_name
-    elif Path(f"~/.{dir_name}").expanduser().is_dir():
-        return Path(f"~/.{dir_name}").expanduser() / file_name
-    else:
-        return xdg_config_home / dir_name / file_name
-
-
 def example_config() -> str:
     return """[test]
 # Example command to test the OpenAI API, taken from below.

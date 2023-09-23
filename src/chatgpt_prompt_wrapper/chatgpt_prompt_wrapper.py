@@ -8,12 +8,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+import conf_finder
+
 from .__version__ import __version__
 from .arg_parser import cli_help, parse_args, true_false_params, true_params
 from .chatgpt import Ask, Chat, Discuss
 from .chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
 from .cmd import commands, cost, init
-from .config import get_config
 from .log_formatter import get_logger
 
 if sys.version_info >= (3, 11):
@@ -51,6 +52,20 @@ class ChatGPTPromptWrapper:
         self.args = parse_args(self.argv)
         self.cmd = self.args.subcommand[0]
 
+        if "." in self.config_file_name:
+            self.config_file_ext = self.config_file_name.split(".")[-1]
+            self.config_file_name = ".".join(
+                self.config_file_name.split(".")[:-1]
+            )
+        else:
+            self.config_file_ext = "toml"
+
+        if "." in self.cost_file_name:
+            self.cost_file_ext = self.cost_file_name.split(".")[-1]
+            self.cost_file_name = ".".join(self.cost_file_name.split(".")[:-1])
+        else:
+            self.cost_file_ext = "json"
+
     def cmd_wo_config(self) -> bool:
         if self.cmd == "help":
             self.log.info(cli_help())
@@ -77,9 +92,13 @@ class ChatGPTPromptWrapper:
         self.config_file = (
             Path(self.args.conf)
             if self.args.conf
-            else get_config(self.cmd_name, self.config_file_name)
+            else conf_finder.conf(
+                self.cmd_name, self.config_file_ext, self.config_file_name
+            )
         )
-        self.cost_file = get_config(self.cmd_name, self.cost_file_name)
+        self.cost_file = conf_finder.conf(
+            self.cmd_name, self.cost_file_ext, self.cost_file_name
+        )
 
     def set_config_messages(self, config: dict[str, Any]) -> None:
         if "messages" not in config:
