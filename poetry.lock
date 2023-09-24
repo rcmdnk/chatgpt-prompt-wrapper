@@ -412,14 +412,14 @@ files = [
 
 [[package]]
 name = "conf-finder"
-version = "0.1.0"
+version = "0.1.1"
 description = "Configuration file finder."
 category = "main"
 optional = false
 python-versions = ">=3.9,<3.12"
 files = [
-    {file = "conf_finder-0.1.0-py3-none-any.whl", hash = "sha256:525311cb73aa64246fe0a130110bf1312717b566f99751017049d029834ab3bb"},
-    {file = "conf_finder-0.1.0.tar.gz", hash = "sha256:93ede283da17d196c669db2410145ef20dd66dcfc2ef4b2f3c00add73e44cbe0"},
+    {file = "conf_finder-0.1.1-py3-none-any.whl", hash = "sha256:6980ef6cd2c45b4a145b16939674053cbf044f6b7678d0afe96bafe85075a707"},
+    {file = "conf_finder-0.1.1.tar.gz", hash = "sha256:f2e367382a87a814588bc8fb80bfebc3c87c2db799092cc0577149d1c5b64af8"},
 ]
 
 [package.dependencies]
@@ -2268,4 +2268,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "2aac4b9b3e72c20c290f093d0d49645199a48cc7b9a3a56fe694924f89d7d785"
+content-hash = "1ebf1907ca527dd63870cdd6d959f44d7ac74c3f9140994297bb7d2716e50059"
