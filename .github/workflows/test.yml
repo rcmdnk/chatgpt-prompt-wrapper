@@ -78,7 +78,22 @@ jobs:
           fi
       - uses: rcmdnk/python-action@v2
         with:
+          checkout: 1
+          setup-python: 1
+          python-version: "${{ matrix.python-version }}"
+          pip: 'pip'
+          setup-cmd: 'poetry install'
+          pip-packages: ''
+          poetry': 1
+          cache: 'poetry'
+          pytest: 1
+          pytest-tests-path: 'tests/'
+          pytest-ignore: ''
+          pytest-separate-benchmark: 0
+          coverage: 1
+          coverage-cov-path: 'src'
           coverage-push: "${{ env.IS_MAIN }}"
           coverage-push-condition: "branch=${{ env.MAIN_BRANCH }}, os=${{ env.MAIN_OS }}, python_version=${{ env.MAIN_PY_VER }}"
+          github_token: "${{github.token}}"
           pre-commit: "${{ env.IS_MAIN }}"
           tmate: "${{ env.DEBUG }}"
