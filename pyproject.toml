@@ -8,10 +8,10 @@ homepage = "https://github.com/rcmdnk/chatgpt-prompt-wrapper"
 readme = "README.md"
 license = "apache-2.0"
 keywords = ["chat", "gpt", "openai", "cli"]
-classifiers = ["Development Status :: 3 - Alpha", "Environment :: Console", "Intended Audience :: Developers", "Intended Audience :: End Users/Desktop", "License :: OSI Approved :: Apache Software License", "Natural Language :: English", "Operating System :: OS Independent", "Programming Language :: Python :: 3.9", "Programming Language :: Python :: 3.10", "Programming Language :: Python :: 3.11", "Topic :: Communications :: Chat", "Topic :: Utilities"]
+classifiers = ["Development Status :: 3 - Alpha", "Environment :: Console", "Intended Audience :: Developers", "Intended Audience :: End Users/Desktop", "License :: OSI Approved :: Apache Software License", "Natural Language :: English", "Operating System :: OS Independent", "Programming Language :: Python :: 3.9", "Programming Language :: Python :: 3.10", "Programming Language :: Python :: 3.11", "Programming Language :: Python :: 3.12", "Topic :: Communications :: Chat", "Topic :: Utilities"]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.13"
+python = ">=3.10,<3.13"
 tomli = { version = "^2.0.1", python = "<3.11"}
 openai = "^1.0.0"
 tiktoken = "^0.5.0"
