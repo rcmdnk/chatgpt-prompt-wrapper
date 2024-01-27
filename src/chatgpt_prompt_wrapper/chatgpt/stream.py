@@ -2,9 +2,12 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Generator
 
+from inherit_docstring import inherit_docstring
+
 from .chatgpt import ChatGPT, Messages
 
 
+@inherit_docstring
 @dataclass
 class Stream(ChatGPT):
     """Stream chat class with ChatGPT."""

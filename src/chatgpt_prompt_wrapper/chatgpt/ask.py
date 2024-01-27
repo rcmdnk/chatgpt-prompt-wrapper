@@ -1,10 +1,13 @@
 from dataclasses import dataclass
 from typing import Any, cast
 
+from inherit_docstring import inherit_docstring
+
 from ..chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
 from .chatgpt import ChatGPT, Messages
 
 
+@inherit_docstring
 @dataclass
 class Ask(ChatGPT):
     """Ask class for OpenAI's API.
@@ -34,7 +37,6 @@ class Ask(ChatGPT):
             pass
         elif finish_reason == "length":
             usage = response["usage"]
-            usage["prompt_tokens"], usage["completion_tokens"]
             if self.max_tokens:
                 reason = f"max_tokens for completion = {self.max_tokens}."
             else:

@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Any, Generator, cast
 
+from inherit_docstring import inherit_docstring
 from prompt_toolkit import prompt
 from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.key_binding import KeyBindings
@@ -12,6 +13,7 @@ from .chatgpt import Messages
 from .stream import Stream
 
 
+@inherit_docstring
 @dataclass
 class Chat(Stream):
     """Chat class for interacting with OpenAI's API.

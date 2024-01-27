@@ -9,13 +9,12 @@ import openai
 import tiktoken
 
 from ..chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
-from ..docstring import NumpyModDocstringInheritanceInitMeta
 
 Messages = list[dict[str, str]]
 
 
 @dataclass
-class ChatGPT(metaclass=NumpyModDocstringInheritanceInitMeta):
+class ChatGPT:
     """ChatGPT class for interacting with OpenAI's API.
 
     Parameters

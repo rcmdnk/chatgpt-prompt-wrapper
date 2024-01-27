@@ -2,11 +2,14 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any, Generator, cast
 
+from inherit_docstring import inherit_docstring
+
 from ..chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
 from .chatgpt import Messages
 from .stream import Stream
 
 
+@inherit_docstring
 @dataclass
 class Discuss(Stream):
     """Discussion between ChatGPTs.
