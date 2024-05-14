@@ -7,7 +7,7 @@ Python CLI implementation for [ChatGPT](https://openai.com/blog/chatgpt).
 
 ## Requirements
 
-- Python 3.9, 3.10, 3.11
+- Python >= 3.10
 
 ## Installation
 
