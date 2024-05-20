@@ -95,10 +95,14 @@ class ChatGPT:
             {
                 k: v
                 for k, v in {
-                    "gpt-4o": 128000,
-                    "gpt-4-turbo": 128000,
-                    "gpt-4": 8192,
-                    "gpt-3.5-turbo": 16385,
+                    # "gpt-4o": 128000,
+                    # "gpt-4-turbo": 128000,
+                    # "gpt-4": 8192,
+                    # "gpt-3.5-turbo": 16385,
+                    "gpt-4o": 4096,
+                    "gpt-4-turbo": 4096,
+                    "gpt-4": 4096,
+                    "gpt-3.5-turbo": 4096,
                 }.items()
                 if k not in self.model_max_tokens
             }
