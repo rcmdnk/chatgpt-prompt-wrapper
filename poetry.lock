@@ -1477,13 +1477,13 @@ files = [
 
 [[package]]
 name = "pep8-naming"
-version = "0.13.3"
+version = "0.14.1"
 description = "Check PEP-8 naming conventions, plugin for flake8"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "pep8-naming-0.13.3.tar.gz", hash = "sha256:1705f046dfcd851378aac3be1cd1551c7c1e5ff363bacad707d43007877fa971"},
-    {file = "pep8_naming-0.13.3-py3-none-any.whl", hash = "sha256:1a86b8c71a03337c97181917e2b472f0f5e4ccb06844a0d6f0a33522549e7a80"},
+    {file = "pep8-naming-0.14.1.tar.gz", hash = "sha256:1ef228ae80875557eb6c1549deafed4dabbf3261cfcafa12f773fe0db9be8a36"},
+    {file = "pep8_naming-0.14.1-py3-none-any.whl", hash = "sha256:63f514fc777d715f935faf185dedd679ab99526a7f2f503abb61587877f7b1c5"},
 ]
 
 [package.dependencies]
@@ -1540,13 +1540,13 @@ virtualenv = ">=20.10.0"
 
 [[package]]
 name = "prompt-toolkit"
-version = "3.0.44"
+version = "3.0.45"
 description = "Library for building powerful interactive command lines in Python"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "prompt_toolkit-3.0.44-py3-none-any.whl", hash = "sha256:205a20669633d042d3722a528b8e7cd3f4dbd9e1450935f596c2cc61166762dd"},
-    {file = "prompt_toolkit-3.0.44.tar.gz", hash = "sha256:c1dfd082c4259964bc8bcce1f8460d9dbeb5d4a37bfc25b8082bc02cd41c8af6"},
+    {file = "prompt_toolkit-3.0.45-py3-none-any.whl", hash = "sha256:a29b89160e494e3ea8622b09fa5897610b437884dcdcd054fdc1308883326c2a"},
+    {file = "prompt_toolkit-3.0.45.tar.gz", hash = "sha256:07c60ee4ab7b7e90824b61afa840c8f5aad2d46b3e2e10acc33d8ecc94a49089"},
 ]
 
 [package.dependencies]
@@ -1618,13 +1618,13 @@ windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "pyproject-pre-commit"
-version = "0.1.9"
+version = "0.1.10"
 description = "pre-commit hooks for python projects using pyproject.toml."
 optional = false
 python-versions = "<4.0.0,>=3.8.1"
 files = [
-    {file = "pyproject_pre_commit-0.1.9-py3-none-any.whl", hash = "sha256:1413a6a5dc9c8a30bb2a93ad6c4e06da300d65d21007a0c70fe4ab50343b6990"},
-    {file = "pyproject_pre_commit-0.1.9.tar.gz", hash = "sha256:d49069c8f6557f46df910896c8f37bbe34c3e9f707e1432951c98e5ad1f120d6"},
+    {file = "pyproject_pre_commit-0.1.10-py3-none-any.whl", hash = "sha256:7fc43564183e53f008033de7d20cbb6ee17051a8d779f4531ae5f79558db6218"},
+    {file = "pyproject_pre_commit-0.1.10.tar.gz", hash = "sha256:53c222f395d2c13b98427d9da19d34fb8d126a0cf067acf2f15547f7ff3f2b62"},
 ]
 
 [package.dependencies]
@@ -1652,7 +1652,7 @@ mdformat-frontmatter = ">=2.0.1,<3.0.0"
 mdformat-gfm = ">=0.3.5,<0.4.0"
 mypy = ">=1.5.1,<2.0.0"
 numpydoc = ">=1.6.0,<2.0.0"
-pep8-naming = ">=0.13.3,<0.14.0"
+pep8-naming = ">=0.14.0,<0.15.0"
 pre-commit = ">=3.3.3,<4.0.0"
 pycodestyle = ">=2.11.0,<3.0.0"
 shellcheck-py = ">=0.9.0.5,<0.10.0.0"
