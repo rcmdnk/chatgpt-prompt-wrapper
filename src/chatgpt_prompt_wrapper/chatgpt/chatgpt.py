@@ -48,7 +48,7 @@ class ChatGPT:
     """
 
     key: str
-    model: str = "gpt-3.5-turbo"
+    model: str = "gpt-4o-mini"
     max_tokens: int = 0
     min_max_tokens: int = 200
     tokens_limit: int = 0
