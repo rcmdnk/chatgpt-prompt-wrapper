@@ -13,11 +13,11 @@ classifiers = ["Development Status :: 3 - Alpha", "Environment :: Console", "Int
 [tool.poetry.dependencies]
 python = "^3.10"
 tomli = { version = "^2.0.1", python = "<3.11"}
-openai = "0.28.0"
+openai = "^1.0.0"
 tiktoken = "^0.7.0"
 prompt-toolkit = "^3.0.39"
-conf-finder = "^0.1.2"
-inherit-docstring = "^0.1.3"
+conf-finder = "^0.1.3"
+inherit-docstring = "^0.1.4"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
