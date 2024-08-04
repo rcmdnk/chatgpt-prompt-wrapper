@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chatgpt-prompt-wrapper"
-version = "0.0.20"
+version = "0.1.0"
 description = "CLI tool to wrap ChatGPT Python API."
 authors = ["rcmdnk <rcmdnk@gmail.com>"]
 repository = "https://github.com/rcmdnk/chatgpt-prompt-wrapper"
