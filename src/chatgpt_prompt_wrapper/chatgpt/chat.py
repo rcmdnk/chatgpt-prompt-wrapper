@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import Any, Generator, cast
 
 from inherit_docstring import inherit_docstring
 from prompt_toolkit import prompt
@@ -127,10 +126,7 @@ class Chat(Stream):
                     messages = messages[1:]
                     tokens = tokens[1:]
                 cost += self.prices[self.model][0] * prompt_tokens / 1000.0
-                response = cast(
-                    Generator[dict[str, Any], None, None],
-                    self.completion(messages, stream=True),
-                )
+                response = self.completion_stream(messages)
                 new_message = self.show_stream(response, max_size)
                 self.log.info("\n")
                 messages.append(new_message)

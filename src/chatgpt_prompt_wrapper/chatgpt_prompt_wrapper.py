@@ -14,7 +14,7 @@ from .__version__ import __version__
 from .arg_parser import cli_help, parse_args, true_false_params, true_params
 from .chatgpt import Ask, Chat, Discuss
 from .chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
-from .cmd import commands, cost, init
+from .cmds import commands, cost, init
 from .log_formatter import get_logger
 
 if sys.version_info >= (3, 11):
@@ -150,9 +150,10 @@ class ChatGPTPromptWrapper:
         cmd_config = config.get("global", {})
         cmd_config.update(config.get(self.cmd, {}))
 
-        cmd_config["mode"] = cmd_config.get("mode", "ask")
         if self.cmd in ["ask", "chat", "discuss"]:
             cmd_config["mode"] = self.cmd
+        else:
+            cmd_config["mode"] = cmd_config.get("mode", "ask")
 
         self.update_cmd_config(cmd_config)
 

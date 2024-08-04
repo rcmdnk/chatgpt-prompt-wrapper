@@ -1,10 +1,16 @@
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
-from typing import Any, Generator
+from typing import TYPE_CHECKING
 
 from inherit_docstring import inherit_docstring
 
 from .chatgpt import ChatGPT, Messages
+
+if TYPE_CHECKING:
+    import openai.Stream
+    from openai.types.chat import ChatCompletionChunk
 
 
 @inherit_docstring
@@ -34,7 +40,7 @@ class Stream(ChatGPT):
 
     def show_stream(
         self,
-        response: Generator[dict[str, Any], None, None],
+        response: openai.Stream[ChatCompletionChunk],
         max_size: int,
         name: str = "",
     ) -> dict[str, str]:
@@ -42,14 +48,14 @@ class Stream(ChatGPT):
         if name:
             message["name"] = name
         for chunk in response:
-            delta = chunk["choices"][0]["delta"]
-            if "role" in delta:
-                message["role"] = delta["role"]
+            delta = chunk.choices[0].delta
+            if delta.role:
+                message["role"] = delta.role
                 self.log.info(self.get_output(message, max_size))
-            if "content" in delta:
-                self.log.info(delta["content"])
-                message["content"] += delta["content"]
-            finish_reason = chunk["choices"][0]["finish_reason"]
+            if delta.content:
+                self.log.info(delta.content)
+                message["content"] += delta.content
+            finish_reason = chunk.choices[0].finish_reason
             if finish_reason == "length":
                 self.log.warning(
                     "The reply was truncated due to the tokens limit.\n"

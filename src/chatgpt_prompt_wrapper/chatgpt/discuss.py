@@ -1,6 +1,5 @@
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Generator, cast
 
 from inherit_docstring import inherit_docstring
 
@@ -129,10 +128,7 @@ class Discuss(Stream):
                     gpt1_messages = gpt1_messages[:2] + gpt1_messages[3:]
                     tokens1 = tokens1[:2] + tokens1[3:]
                 cost += self.prices[self.model][0] * prompt_tokens / 1000.0
-                response = cast(
-                    Generator[dict[str, Any], None, None],
-                    self.completion(gpt1_messages, stream=True),
-                )
+                response = self.completion_stream(gpt1_messages)
 
                 new_message = self.show_stream(
                     response, max_size, name=self.names.get("gpt1", "gpt1")
@@ -163,10 +159,7 @@ class Discuss(Stream):
                     gpt2_messages = gpt2_messages[:2] + gpt2_messages[3:]
                     tokens2 = tokens2[:2] + tokens2[3:]
                 cost += self.prices[self.model][0] * prompt_tokens / 1000.0
-                response = cast(
-                    Generator[dict[str, Any], None, None],
-                    self.completion(gpt2_messages, stream=True),
-                )
+                response = self.completion_stream(gpt2_messages)
                 new_message = self.show_stream(
                     response, max_size, name=self.names.get("gpt2", "gpt2")
                 )

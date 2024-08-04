@@ -3,14 +3,16 @@ from __future__ import annotations
 import logging
 import sys
 from dataclasses import dataclass, field
-from typing import Any, Generator
+from typing import Any, cast
 
 import openai
 import tiktoken
+from openai.types.chat import ChatCompletion, ChatCompletionChunk
 
 from ..chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
 
-Messages = list[dict[str, str]]
+Message = dict[str, Any]
+Messages = list[Message]
 
 
 @dataclass
@@ -24,7 +26,7 @@ class ChatGPT:
     model : str
         The model to use.
     max_tokens : int
-        The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model minus prompt tokens.
+        The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model.
     min_max_tokens: int
         The minimum of max_tokens for the completion when max_tokens = 0.
     tokens_limit : int
@@ -41,6 +43,8 @@ class ChatGPT:
         The colors to use for the different names/roles.
     alias: dict[str, str]
         The aliases of role names.
+    model_context_window : dict[str, int]
+        The context window for each model.
     model_max_tokens: dict[str, int]
         The maximum tokens for each model.
     prices: dict[str, tuple[float, float]]
@@ -70,12 +74,13 @@ class ChatGPT:
             "assistant": "Assistant",
         }
     )
+    model_context_window: dict[str, int] = field(default_factory=dict)
     model_max_tokens: dict[str, int] = field(default_factory=dict)
     prices: dict[str, tuple[float, float]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         self.log = logging.getLogger(__name__)
-        openai.api_key = self.key
+        self.client = openai.OpenAI(api_key=self.key)
         if self.max_tokens:
             self.min_max_tokens = self.max_tokens
 
@@ -91,17 +96,27 @@ class ChatGPT:
         }
 
         # Ref: https://platform.openai.com/docs/models/overview
+        self.model_context_window.update(
+            {
+                k: v
+                for k, v in {
+                    "gpt-4o": 128000,
+                    "gpt-4o-mini": 128000,
+                    "gpt-4-turbo": 128000,
+                    "gpt-4": 8192,
+                    "gpt-3.5-turbo": 16385,
+                }.items()
+                if k not in self.model_context_window
+            }
+        )
         self.model_max_tokens.update(
             {
                 k: v
                 for k, v in {
-                    # "gpt-4o": 128000,
-                    # "gpt-4-turbo": 128000,
-                    # "gpt-4": 8192,
-                    # "gpt-3.5-turbo": 16385,
                     "gpt-4o": 4096,
+                    "gpt-4o-mini": 16384,
                     "gpt-4-turbo": 4096,
-                    "gpt-4": 4096,
+                    "gpt-4": 8192,
                     "gpt-3.5-turbo": 4096,
                 }.items()
                 if k not in self.model_max_tokens
@@ -115,9 +130,10 @@ class ChatGPT:
                 k: v
                 for k, v in {
                     "gpt-4o": (0.005, 0.015),
+                    "gpt-4o-mini": (0.00015, 0.0006),
                     "gpt-4-turbo": (0.010, 0.030),
                     "gpt-4": (0.030, 0.060),
-                    "gpt-3.5-turbo": (0.0005, 0.0015),
+                    "gpt-3.5-turbo": (0.003, 0.006),
                 }.items()
                 if k not in self.prices
             }
@@ -141,19 +157,14 @@ class ChatGPT:
         self.prepare_tokens_checker()
 
     def prepare_tokens_checker(self) -> None:
+        # https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken
         self.encoding = tiktoken.encoding_for_model(self.model)
-        if "gpt-3.5" in self.model:
-            # every message follows <|start|>{role/name}\n{content}<|end|>\n
-            self.tokens_per_message = 4
-            # if there's a name, the role is omitted
-            self.tokens_per_name = -1
-        elif "gpt-4" in self.model:
+        if self.model == "gpt-3.5-turbo-0301":
+            self.tokens_per_message = 4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
+            self.tokens_per_name = -1  # if there's a name, the role is omitted
+        else:
             self.tokens_per_message = 3
             self.tokens_per_name = 1
-        else:
-            raise ChatGPTPromptWrapperError(
-                f"Model: {self.model} is not supported."
-            )
 
         # every reply is primed with <|start|>assistant<|message|>
         self.reply_tokens = 3
@@ -175,7 +186,7 @@ class ChatGPT:
 
     # Ref: https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
     def num_tokens_from_message(
-        self, message: dict[str, str], only_content: bool = False
+        self, message: Message, only_content: bool = False
     ) -> int:
         if only_content:
             return len(self.encoding.encode(message["content"]))
@@ -199,10 +210,10 @@ class ChatGPT:
     def get_max_tokens(self, messages: Messages) -> int:
         prompt_tokens = self.num_tokens_from_messages(messages)
         self.check_prompt_tokens(prompt_tokens)
-
+        remain_tokens = self.tokens_limit - prompt_tokens
         if self.max_tokens:
-            return self.max_tokens
-        return max(self.min_max_tokens, self.tokens_limit - prompt_tokens)
+            return min(self.max_tokens, remain_tokens)
+        return max(self.min_max_tokens, remain_tokens)
 
     def fix_messages(self, messages: Messages) -> Messages:
         if "gpt-3.5" in self.model:
@@ -220,7 +231,7 @@ class ChatGPT:
 
     def get_output(
         self,
-        message: dict[str, str],
+        message: Message,
         size: int = 0,
         add_linebreak: bool = False,
     ) -> str:
@@ -231,12 +242,12 @@ class ChatGPT:
 
     def completion(
         self, messages: Messages, stream: bool = False
-    ) -> Generator[dict[str, Any], None, None] | dict[str, Any]:
+    ) -> ChatCompletion | openai.Stream[ChatCompletionChunk]:
         max_tokens = self.get_max_tokens(messages)
 
-        response = openai.ChatCompletion.create(  # type: ignore
+        return self.client.chat.completions.create(
             model=self.model,
-            messages=messages,
+            messages=messages,  # type: ignore
             max_tokens=max_tokens,
             temperature=self.temperature,
             top_p=self.top_p,
@@ -244,7 +255,17 @@ class ChatGPT:
             frequency_penalty=self.frequency_penalty,
             stream=stream,
         )
-        return response
+
+    def completion_message(self, messages: Messages) -> ChatCompletion:
+        return cast(ChatCompletion, self.completion(messages, stream=False))
+
+    def completion_stream(
+        self, messages: Messages
+    ) -> openai.Stream[ChatCompletionChunk]:
+        return cast(
+            openai.Stream[ChatCompletionChunk],
+            self.completion(messages, stream=True),
+        )
 
     def run(self, messages: Messages) -> float:
         return 0

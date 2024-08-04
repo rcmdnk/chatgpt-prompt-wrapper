@@ -1,10 +1,15 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Any, cast
+from typing import TYPE_CHECKING
 
 from inherit_docstring import inherit_docstring
 
 from ..chatgpt_prompt_wrapper_exception import ChatGPTPromptWrapperError
 from .chatgpt import ChatGPT, Messages
+
+if TYPE_CHECKING:
+    from openai.types.chat import ChatCompletion
 
 
 @inherit_docstring
@@ -20,6 +25,16 @@ class Ask(ChatGPT):
 
     show: bool = False
 
+    def get_tokens(self, response: ChatCompletion) -> tuple[int, int]:
+        if response.usage:
+            prompt_tokens = response.usage.prompt_tokens
+            completion_tokens = response.usage.completion_tokens
+        else:
+            self.log.warning("API response does not have usage information")
+            prompt_tokens = 0
+            completion_tokens = 0
+        return prompt_tokens, completion_tokens
+
     def run(self, messages: Messages) -> float:
         messages = self.fix_messages(messages)
         max_size = max(
@@ -28,19 +43,17 @@ class Ask(ChatGPT):
         if self.show:
             for message in messages:
                 self.log.info(self.get_output(message, max_size))
-        response = cast(
-            dict[str, Any], self.completion(messages, stream=False)
-        )
+        response = self.completion_message(messages)
+        prompt_tokens, completion_tokens = self.get_tokens(response)
 
-        finish_reason = response["choices"][0]["finish_reason"]
+        finish_reason = response.choices[0].finish_reason
         if finish_reason == "stop":
             pass
         elif finish_reason == "length":
-            usage = response["usage"]
             if self.max_tokens:
                 reason = f"max_tokens for completion = {self.max_tokens}."
             else:
-                reason = f"max_tokens for completion = {self.get_max_tokens(messages)} (prompt tokens: {usage['prompt_tokens']}, tokens limit: {self.tokens_limit}, minimum of max tokens: {self.min_max_tokens})."
+                reason = f"max_tokens for completion = {self.get_max_tokens(messages)} (prompt tokens: {prompt_tokens}, tokens limit: {self.tokens_limit}, minimum of max tokens: {self.min_max_tokens})."
             self.log.warning(
                 f"The reply was truncated due to the tokens limit: {reason}"
             )
@@ -52,21 +65,20 @@ class Ask(ChatGPT):
             self.log.warning("API response is incomplete")
         else:
             raise ChatGPTPromptWrapperError(
-                f"Unknown finish_reason: {response['choices'][0]['finish_reason']}"
+                f"Unknown finish_reason: {response.choices[0].finish_reason}"
             )
         if self.show:
             answer = self.get_output(
-                response["choices"][0]["message"], max_size
+                response.choices[0].message.to_dict(), max_size
             )
         else:
-            answer = response["choices"][0]["message"]["content"]
+            if response.choices[0].message.content:
+                answer = response.choices[0].message.content
+            else:
+                answer = ""
         self.log.info(answer)
 
         return (
-            self.prices[self.model][0]
-            * response["usage"]["prompt_tokens"]
-            / 1000.0
-            + self.prices[self.model][1]
-            * response["usage"]["completion_tokens"]
-            / 1000.0
+            self.prices[self.model][0] * prompt_tokens / 1000.0
+            + self.prices[self.model][1] * completion_tokens / 1000.0
         )
