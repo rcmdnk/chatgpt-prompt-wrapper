@@ -1624,13 +1624,13 @@ windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "pyproject-pre-commit"
-version = "0.1.11"
+version = "0.2.1"
 description = "pre-commit hooks for python projects using pyproject.toml."
 optional = false
-python-versions = "<4.0.0,>=3.8.1"
+python-versions = "<4.0.0,>=3.9.0"
 files = [
-    {file = "pyproject_pre_commit-0.1.11-py3-none-any.whl", hash = "sha256:164a0ee10b05e9e67b1460f7e156ed102b565b5314f6bfa2d6b9b3f90a0ee1f3"},
-    {file = "pyproject_pre_commit-0.1.11.tar.gz", hash = "sha256:096e7d060289945651db1986d334ce9e72e5e0c3d341606205d7fb7efd2c062a"},
+    {file = "pyproject_pre_commit-0.2.1-py3-none-any.whl", hash = "sha256:53fc9f0ce8dc3547ddcf589f7e10e98e3c984aab0716442f9f6f8b28ab33651c"},
+    {file = "pyproject_pre_commit-0.2.1.tar.gz", hash = "sha256:3eefbaebf593c95837d02a14f000b4c0ffe31ee07ac4e6b3e0857d65f7db0c57"},
 ]
 
 [package.dependencies]
@@ -1657,7 +1657,7 @@ mdformat-footnote = ">=0.1.1,<0.2.0"
 mdformat-frontmatter = ">=2.0.1,<3.0.0"
 mdformat-gfm = ">=0.3.5,<0.4.0"
 mypy = ">=1.5.1,<2.0.0"
-numpydoc = ">=1.6.0,<2.0.0"
+numpydoc = ">=1.8.0,<2.0.0"
 pep8-naming = ">=0.14.0,<0.15.0"
 pre-commit = ">=3.3.3,<4.0.0"
 pycodestyle = ">=2.11.0,<3.0.0"
@@ -2384,4 +2384,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "6e9ac69effd0d2ef1341278e509574bc527a0d16b33950a38bbeb93d84d79a7a"
+content-hash = "b83be077d719ca0da0bc1b998a8ed9421a5e2f4295599227789db45d24a017c0"
