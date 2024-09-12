@@ -199,7 +199,7 @@ model = "gpt-4o-2024-08-06"
 
 # If model has no corresponding tiktoken's encoding, specify encoding_name
 # Such a "chatgpt-4o-latest" is not supported by tiktoken.encoding_for_model
-# encoding_name = "o200k_base"
+#encoding_name = "o200k_base"
 
 # Following model_max_tokens and prices are pre-defined in
 # https://github.com/rcmdnk/chatgpt-prompt-wrapper/blob/main/src/chatgpt_prompt_wrapper/chatgpt/chatgpt.py
