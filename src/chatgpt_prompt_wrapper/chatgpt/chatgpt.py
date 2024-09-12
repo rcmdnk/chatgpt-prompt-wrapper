@@ -49,6 +49,8 @@ class ChatGPT:
         The maximum tokens for each model.
     prices: dict[str, tuple[float, float]]
         The prices for each model.
+    encoding_name: str
+        Encoding name for tiktoken. If not specified, the encoding is decided by the model name.
     """
 
     key: str
@@ -77,6 +79,7 @@ class ChatGPT:
     model_context_window: dict[str, int] = field(default_factory=dict)
     model_max_tokens: dict[str, int] = field(default_factory=dict)
     prices: dict[str, tuple[float, float]] = field(default_factory=dict)
+    encoding_name: str = ""
 
     def __post_init__(self) -> None:
         self.log = logging.getLogger(__name__)
@@ -158,7 +161,10 @@ class ChatGPT:
 
     def prepare_tokens_checker(self) -> None:
         # https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken
-        self.encoding = tiktoken.encoding_for_model(self.model)
+        if self.encoding_name:
+            self.encoding = tiktoken.get_encoding(self.encoding_name)
+        else:
+            self.encoding = tiktoken.encoding_for_model(self.model)
         if self.model == "gpt-3.5-turbo-0301":
             self.tokens_per_message = 4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
             self.tokens_per_name = -1  # if there's a name, the role is omitted

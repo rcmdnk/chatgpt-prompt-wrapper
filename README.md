@@ -195,17 +195,23 @@ Here is a example configuration:
 [global]
 # Global configuration
 # `global` is special name and not a subcommand
-model = 'gpt-3.5-turbo'
+model = "gpt-4o-2024-08-06"
 
 # Following model_max_tokens and prices are pre-defined in
 # https://github.com/rcmdnk/chatgpt-prompt-wrapper/blob/main/src/chatgpt_prompt_wrapper/chatgpt/chatgpt.py
 # If you find new model or price change, you can overwrite these variables in config as below.
 
+[global.model_context_window]
+# https://platform.openai.com/docs/models/
+"gpt-4o-2024-08-06" = 128000
+
 [global.model_max_tokens]
-"gpt-3.5-turbo-16k" = 16384
+# https://platform.openai.com/docs/models/
+"gpt-4o-2024-08-06" = 16384
 
 [global.prices]
-"gpt-3.5-turbo-16k" = [0.003, 0.004]
+# https://openai.com/api/pricing/
+"gpt-4o-2024-08-06" = [0.0025, 0.010]
 
 [test]
 # Example command to test the OpenAI API, taken from below.
