@@ -1,28 +1,10 @@
 # Development
 
-## Poetry
+## uv
 
-Use [Poetry](https://python-poetry.org/) to setup environment.
+Use [uv](https://docs.astral.sh/uv/) to setup environment.
 
-To install poetry, run:
-
-```
-$ pip install poetry
-```
-
-or use `pipx` (`x` is `3` or anything of your python version).
-
-Setup poetry environment:
-
-```
-$ poetry install
-```
-
-Then enter the environment:
-
-```
-$ poetry shell
-```
+To install uv, refer to [the installation page](https://docs.astral.sh/uv/getting-started/installation/).
 
 ## pre-commit
 
