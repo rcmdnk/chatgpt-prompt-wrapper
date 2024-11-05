@@ -24,10 +24,6 @@
   },
   "packageRules": [
     {
-      "matchPackagePatterns": ["openai"],
-      "enabled": false
-    },
-    {
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch",
       "matchPackagePatterns": [
@@ -36,6 +32,13 @@
       "matchUpdateTypes": [
         "minor",
         "patch"
+      ]
+    },
+    {
+      "groupName": "Python",
+      "groupSlug": "Python",
+      "matchPackagePatterns": [
+        "python"
       ]
     }
   ]
