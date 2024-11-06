@@ -21,6 +21,7 @@ class Ask(ChatGPT):
     ----------
     show: bool
         Whether to show the prompt.
+
     """
 
     show: bool = False
@@ -38,7 +39,8 @@ class Ask(ChatGPT):
     def run(self, messages: Messages) -> float:
         messages = self.fix_messages(messages)
         max_size = max(
-            10, max(len(self.get_name(message)) for message in messages)
+            10,
+            max(len(self.get_name(message)) for message in messages),
         )
         if self.show:
             for message in messages:
@@ -55,27 +57,27 @@ class Ask(ChatGPT):
             else:
                 reason = f"max_tokens for completion = {self.get_max_tokens(messages)} (prompt tokens: {prompt_tokens}, tokens limit: {self.tokens_limit}, minimum of max tokens: {self.min_max_tokens})."
             self.log.warning(
-                f"The reply was truncated due to the tokens limit: {reason}"
+                f"The reply was truncated due to the tokens limit: {reason}",
             )
         elif finish_reason == "content_filter":
             self.log.warning(
-                "The reply was omitted due to the content filters."
+                "The reply was omitted due to the content filters.",
             )
         elif finish_reason is None:
             self.log.warning("API response is incomplete")
         else:
             raise ChatGPTPromptWrapperError(
-                f"Unknown finish_reason: {response.choices[0].finish_reason}"
+                f"Unknown finish_reason: {response.choices[0].finish_reason}",
             )
         if self.show:
             answer = self.get_output(
-                response.choices[0].message.to_dict(), max_size
+                response.choices[0].message.to_dict(),
+                max_size,
             )
+        elif response.choices[0].message.content:
+            answer = response.choices[0].message.content
         else:
-            if response.choices[0].message.content:
-                answer = response.choices[0].message.content
-            else:
-                answer = ""
+            answer = ""
         self.log.info(answer)
 
         return (

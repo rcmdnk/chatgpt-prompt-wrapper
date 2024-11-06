@@ -25,12 +25,13 @@ class Chat(Stream):
         If true, use the vi keybindings at input prompt (default is emacs key bindings).
     chat_exit_cmd: list[str]
         The command to exit the chat.
+
     """
 
     multiline: bool = False
     vi: bool = False
     chat_exit_cmd: list[str] = field(
-        default_factory=lambda: ["bye", "bye!", "exit", "quit"]
+        default_factory=lambda: ["bye", "bye!", "exit", "quit"],
     )
 
     def __post_init__(self) -> None:
@@ -54,7 +55,9 @@ class Chat(Stream):
             return toolbar_view
 
         def prompt_continuation(
-            width: int, line_number: int, is_soft_wrap: bool
+            width: int,
+            line_number: int,
+            is_soft_wrap: bool,
         ) -> str:
             return ""
 
@@ -97,7 +100,7 @@ class Chat(Stream):
         )
         for message in messages:
             self.log.info(
-                self.get_output(message, max_size, add_linebreak=True)
+                self.get_output(message, max_size, add_linebreak=True),
             )
 
         cost = 0.0
@@ -134,7 +137,8 @@ class Chat(Stream):
                 cost += (
                     self.prices[self.model][1]
                     * self.num_tokens_from_message(
-                        new_message, only_content=True
+                        new_message,
+                        only_content=True,
                     )
                     / 1000.0
                 )

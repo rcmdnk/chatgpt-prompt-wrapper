@@ -22,7 +22,7 @@ def test_parse_args(monkeypatch):
     assert args.subcommand == ["sub_cmd"]
     assert args.conf == "file"
     assert args.message == [
-        " ".join(["message", "inputs", "-k", "in message"])
+        " ".join(["message", "inputs", "-k", "in message"]),
     ]
 
 

@@ -10,7 +10,7 @@ To install uv, refer to [the installation page](https://docs.astral.sh/uv/gettin
 
 To check codes at the commit, use [pre-commit](https://pre-commit.com/).
 
-`pre-commit` command will be installed in the poetry environment.
+`pre-commit` command will be installed in the uv environment.
 
 First, run:
 

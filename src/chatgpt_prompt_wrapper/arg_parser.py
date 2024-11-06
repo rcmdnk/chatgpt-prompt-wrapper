@@ -19,7 +19,10 @@ def get_arg_parser() -> ArgumentParser:
         nargs=1,
     )
     arg_parser.add_argument(
-        "message", help="Message to send to ChatGPT", type=str, nargs="*"
+        "message",
+        help="Message to send to ChatGPT",
+        type=str,
+        nargs="*",
     )
     arg_parser.add_argument(
         "-k",
@@ -29,10 +32,16 @@ def get_arg_parser() -> ArgumentParser:
         default=os.environ.get("OPENAI_API_KEY", ""),
     )
     arg_parser.add_argument(
-        "-c", "--conf", help="Path to the configuration TOML file.", type=str
+        "-c",
+        "--conf",
+        help="Path to the configuration TOML file.",
+        type=str,
     )
     arg_parser.add_argument(
-        "-m", "--model", help="ChatGPT Model to use.", type=str
+        "-m",
+        "--model",
+        help="ChatGPT Model to use.",
+        type=str,
     )
     arg_parser.add_argument(
         "-t",

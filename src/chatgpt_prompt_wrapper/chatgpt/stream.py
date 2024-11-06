@@ -58,11 +58,11 @@ class Stream(ChatGPT):
             finish_reason = chunk.choices[0].finish_reason
             if finish_reason == "length":
                 self.log.warning(
-                    "The reply was truncated due to the tokens limit.\n"
+                    "The reply was truncated due to the tokens limit.\n",
                 )
             elif finish_reason == "content_filter":
                 self.log.warning(
-                    "The reply was omitted due to the content filters.\n"
+                    "The reply was omitted due to the content filters.\n",
                 )
 
         # Remove the name from the message, as it fails if it does not match '^[a-zA-Z0-9_-]{1,64}$'.

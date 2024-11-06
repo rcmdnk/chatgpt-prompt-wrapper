@@ -25,7 +25,7 @@ class LogFormatter(logging.Formatter):
                     f"\033[{colors[level]};1m{self.formats[level]}\033[m"
                 )
 
-    def format(self, record: logging.LogRecord) -> str:  # noqa: A003
+    def format(self, record: logging.LogRecord) -> str:
         fmt = self.formats.get(record.levelno, self.default_format)
         formatter = logging.Formatter(fmt)
         return formatter.format(record)

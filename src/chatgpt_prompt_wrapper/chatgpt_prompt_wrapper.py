@@ -37,6 +37,7 @@ class ChatGPTPromptWrapper:
         Configuration TOML file name.
     cost_file_name : str
         Cost JSON file name.
+
     """
 
     argv: list[str] | None = None
@@ -55,7 +56,7 @@ class ChatGPTPromptWrapper:
         if "." in self.config_file_name:
             self.config_file_ext = self.config_file_name.split(".")[-1]
             self.config_file_name = ".".join(
-                self.config_file_name.split(".")[:-1]
+                self.config_file_name.split(".")[:-1],
             )
         else:
             self.config_file_ext = "toml"
@@ -94,11 +95,13 @@ class ChatGPTPromptWrapper:
             Path(self.args.conf)
             if self.args.conf
             else cf.conf(
-                ext=self.config_file_ext, file_name=self.config_file_name
+                ext=self.config_file_ext,
+                file_name=self.config_file_name,
             )
         )
         self.cost_file = cf.conf(
-            ext=self.cost_file_ext, file_name=self.cost_file_name
+            ext=self.cost_file_ext,
+            file_name=self.cost_file_name,
         )
 
     def set_config_messages(self, config: dict[str, Any]) -> None:
@@ -106,7 +109,7 @@ class ChatGPTPromptWrapper:
             config["messages"] = []
         if self.args.message:
             config["messages"].append(
-                {"role": "user", "content": " ".join(self.args.message)}
+                {"role": "user", "content": " ".join(self.args.message)},
             )
 
     def set_ture_false_config(
@@ -143,7 +146,7 @@ class ChatGPTPromptWrapper:
                 if k
                 not in [x for y in true_false_params for x in y] + true_params
                 and v is not None
-            }
+            },
         )
 
     def get_cmd_config(self, config: dict[str, Any]) -> dict[str, Any]:
@@ -160,11 +163,11 @@ class ChatGPTPromptWrapper:
         if not cmd_config["messages"]:
             if cmd_config["mode"] == "ask":
                 raise ChatGPTPromptWrapperError(
-                    "This subcommand (ask mode) does not predefined prompt and need input message."
+                    "This subcommand (ask mode) does not predefined prompt and need input message.",
                 )
-            elif self.cmd == "discuss":
+            if self.cmd == "discuss":
                 raise ChatGPTPromptWrapperError(
-                    "This subcommand (discussion mode) needs input message as a theme."
+                    "This subcommand (discussion mode) needs input message as a theme.",
                 )
 
         return cmd_config
@@ -179,7 +182,7 @@ class ChatGPTPromptWrapper:
             cls = Discuss
         else:
             raise ChatGPTPromptWrapperError(
-                f"Invalid mode: {config['mode']}. Please choose from ask, chat, discuss."
+                f"Invalid mode: {config['mode']}. Please choose from ask, chat, discuss.",
             )
         accepted_args = inspect.signature(cls.__init__).parameters
         params = {k: v for k, v in config.items() if k in accepted_args}
@@ -187,13 +190,16 @@ class ChatGPTPromptWrapper:
         return cost_data_this
 
     def update_cost(
-        self, cost_file: Path, new_cost: float, show_cost: bool = False
+        self,
+        cost_file: Path,
+        new_cost: float,
+        show_cost: bool = False,
     ) -> None:
         if show_cost:
             self.log.info(f"\nEstimated cost: ${new_cost:.6f}")
         cost_data = {}
         if cost_file.exists():
-            with open(cost_file, "r") as f:
+            with open(cost_file) as f:
                 cost_data = dict(sorted(json.load(f).items()))
         month = datetime.now().strftime("%Y%m")
         cost_data[month] = cost_data.get(month, 0) + new_cost
@@ -212,7 +218,7 @@ class ChatGPTPromptWrapper:
 
         if not self.args.key:
             raise ChatGPTPromptWrapperError(
-                "Set OPEN_AI_API_KEY environment variable or give it by -k (--key) argument."
+                "Set OPEN_AI_API_KEY environment variable or give it by -k (--key) argument.",
             )
 
         if (
@@ -222,7 +228,7 @@ class ChatGPTPromptWrapper:
             raise ChatGPTPromptWrapperError(
                 f"Configuration file {self.config_file} does not exist"
                 f"`ask` or `cht` subcommand can be used w/o configuration file."
-                f"You prepare the configuration file by `cg init` command."
+                f"You prepare the configuration file by `cg init` command.",
             )
 
         if self.config_file.is_file():
@@ -242,13 +248,15 @@ class ChatGPTPromptWrapper:
             raise ChatGPTPromptWrapperError("`global` is not a subcommand.")
         if self.cmd not in cmds:
             raise ChatGPTPromptWrapperError(
-                f"Subcommand: `{self.cmd}` is not defined."
+                f"Subcommand: `{self.cmd}` is not defined.",
             )
 
         cmd_config = self.get_cmd_config(config)
         cost_data_this = self.run_chatgpt(cmd_config)
         self.update_cost(
-            self.cost_file, cost_data_this, cmd_config["show_cost"]
+            self.cost_file,
+            cost_data_this,
+            cmd_config["show_cost"],
         )
 
 

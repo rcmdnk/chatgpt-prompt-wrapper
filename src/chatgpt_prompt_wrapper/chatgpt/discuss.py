@@ -19,19 +19,20 @@ class Discuss(Stream):
         The colors to use for the different roles.
     names: dict[str, str]
         The names to use for the different roles.
+
     """
 
     colors: dict[str, str] = field(
         default_factory=lambda: {
             "gpt1": "blue",
             "gpt2": "purple",
-        }
+        },
     )
     names: dict[str, str] = field(
         default_factory=lambda: {
             "gpt1": "gpt1",
             "gpt2": "gpt2",
-        }
+        },
     )
 
     def __post_init__(self) -> None:
@@ -61,7 +62,8 @@ class Discuss(Stream):
         del self.default_terminators
 
     def prepare_messages(
-        self, messages: Messages
+        self,
+        messages: Messages,
     ) -> tuple[Messages, Messages, list[int], list[int]]:
         theme = {}
         gpt1 = {
@@ -91,7 +93,7 @@ class Discuss(Stream):
         if not theme or not gpt1 or not gpt2:
             self.reset_no_line_break_log()
             raise ChatGPTPromptWrapperError(
-                "The discuss mode must have a theme (or given by a message from the command line), gpt1, and gpt2 roles."
+                "The discuss mode must have a theme (or given by a message from the command line), gpt1, and gpt2 roles.",
             )
         gpt1_messages = [theme, gpt1]
         gpt2_messages = [theme, gpt2]
@@ -112,7 +114,7 @@ class Discuss(Stream):
 
     def run_main(self, messages: Messages) -> tuple[int, float]:
         gpt1_messages, gpt2_messages, tokens1, tokens2 = self.prepare_messages(
-            messages
+            messages,
         )
         max_size = max(10, *[len(x) for x in self.names])
         self.log.info(f"Theme: {messages[0]['content']}\n")
@@ -131,7 +133,9 @@ class Discuss(Stream):
                 response = self.completion_stream(gpt1_messages)
 
                 new_message = self.show_stream(
-                    response, max_size, name=self.names.get("gpt1", "gpt1")
+                    response,
+                    max_size,
+                    name=self.names.get("gpt1", "gpt1"),
                 )
                 gpt1_messages.append(new_message)
                 tokens = self.num_tokens_from_message(new_message)
@@ -147,7 +151,8 @@ class Discuss(Stream):
                 cost += (
                     self.prices[self.model][1]
                     * self.num_tokens_from_message(
-                        new_message, only_content=True
+                        new_message,
+                        only_content=True,
                     )
                     / 1000.0
                 )
@@ -161,7 +166,9 @@ class Discuss(Stream):
                 cost += self.prices[self.model][0] * prompt_tokens / 1000.0
                 response = self.completion_stream(gpt2_messages)
                 new_message = self.show_stream(
-                    response, max_size, name=self.names.get("gpt2", "gpt2")
+                    response,
+                    max_size,
+                    name=self.names.get("gpt2", "gpt2"),
                 )
                 gpt2_messages.append(new_message)
                 tokens = self.num_tokens_from_message(new_message)
@@ -177,7 +184,8 @@ class Discuss(Stream):
                 cost += (
                     self.prices[self.model][1]
                     * self.num_tokens_from_message(
-                        new_message, only_content=True
+                        new_message,
+                        only_content=True,
                     )
                     / 1000.0
                 )

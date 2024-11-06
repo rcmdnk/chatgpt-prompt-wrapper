@@ -51,6 +51,7 @@ class ChatGPT:
         The prices for each model.
     encoding_name: str
         Encoding name for tiktoken. If not specified, the encoding is decided by the model name.
+
     """
 
     key: str
@@ -67,14 +68,14 @@ class ChatGPT:
             "system": "blue",
             "user": "green",
             "assistant": "cyan",
-        }
+        },
     )
     alias: dict[str, str] = field(
         default_factory=lambda: {
             "system": "System",
             "user": "User",
             "assistant": "Assistant",
-        }
+        },
     )
     model_context_window: dict[str, int] = field(default_factory=dict)
     model_max_tokens: dict[str, int] = field(default_factory=dict)
@@ -110,7 +111,7 @@ class ChatGPT:
                     "gpt-3.5-turbo": 16385,
                 }.items()
                 if k not in self.model_context_window
-            }
+            },
         )
         self.model_max_tokens.update(
             {
@@ -123,7 +124,7 @@ class ChatGPT:
                     "gpt-3.5-turbo": 4096,
                 }.items()
                 if k not in self.model_max_tokens
-            }
+            },
         )
 
         # prices / 1K tokens in USD, (Prompt, Completion)
@@ -139,7 +140,7 @@ class ChatGPT:
                     "gpt-3.5-turbo": (0.003, 0.006),
                 }.items()
                 if k not in self.prices
-            }
+            },
         )
 
         self.set_model(self.model)
@@ -155,7 +156,8 @@ class ChatGPT:
             self.tokens_limit = self.model_max_tokens[self.model] - 1
         else:
             self.tokens_limit = min(
-                self.tokens_limit, self.model_max_tokens[self.model] - 1
+                self.tokens_limit,
+                self.model_max_tokens[self.model] - 1,
             )
         self.prepare_tokens_checker()
 
@@ -187,12 +189,14 @@ class ChatGPT:
     def check_prompt_tokens(self, prompt_tokens: int) -> None:
         if prompt_tokens + self.min_max_tokens > self.tokens_limit:
             raise ChatGPTPromptWrapperError(
-                f"Too much tokens: prompt tokens ({prompt_tokens}) + completion tokens ({self.min_max_tokens}) > tokens limit ({self.tokens_limit})."
+                f"Too much tokens: prompt tokens ({prompt_tokens}) + completion tokens ({self.min_max_tokens}) > tokens limit ({self.tokens_limit}).",
             )
 
     # Ref: https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
     def num_tokens_from_message(
-        self, message: Message, only_content: bool = False
+        self,
+        message: Message,
+        only_content: bool = False,
     ) -> int:
         if only_content:
             return len(self.encoding.encode(message["content"]))
@@ -247,7 +251,9 @@ class ChatGPT:
         return f"{name}> {message['content']}{lb}"
 
     def completion(
-        self, messages: Messages, stream: bool = False
+        self,
+        messages: Messages,
+        stream: bool = False,
     ) -> ChatCompletion | openai.Stream[ChatCompletionChunk]:
         max_tokens = self.get_max_tokens(messages)
 
@@ -266,7 +272,8 @@ class ChatGPT:
         return cast(ChatCompletion, self.completion(messages, stream=False))
 
     def completion_stream(
-        self, messages: Messages
+        self,
+        messages: Messages,
     ) -> openai.Stream[ChatCompletionChunk]:
         return cast(
             openai.Stream[ChatCompletionChunk],
