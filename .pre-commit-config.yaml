@@ -6,17 +6,17 @@ repos:
   - id: ruff-lint
   - id: ruff-format-diff
   - id: ruff-format
-  - id: black-diff
-  - id: black
-  - id: blacken-docs
-  - id: autoflake-diff
-  - id: autoflake
-  - id: autopep8-diff
-  - id: autopep8
-  - id: isort-diff
-  - id: isort
-  - id: flake8
-  - id: bandit
+  #  - id: black-diff
+  #  - id: black
+  #  - id: blacken-docs
+  #  - id: autoflake-diff
+  #  - id: autoflake
+  #  - id: autopep8-diff
+  #  - id: autopep8
+  #  - id: isort-diff
+  #  - id: isort
+  #  - id: flake8
+  #  - id: bandit
   - id: mypy
   - id: shellcheck
   - id: mdformat-check
