@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/rcmdnk/pyproject-pre-commit
-  rev: v0.3.0
+  rev: v0.3.4
   hooks:
   - id: ruff-lint-diff
   - id: ruff-lint
@@ -21,6 +21,7 @@ repos:
   - id: shellcheck
   - id: mdformat-check
   - id: mdformat
+  - id: validate-pyproject
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v5.0.0
   hooks:
