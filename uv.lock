@@ -257,7 +257,7 @@ dependencies = [
     { name = "openai" },
     { name = "prompt-toolkit" },
     { name = "tiktoken" },
-    { name = "tomli", marker = "python_full_version < '3.12'" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 
 [package.dev-dependencies]
@@ -276,7 +276,7 @@ requires-dist = [
     { name = "openai", specifier = ">=1.0.0" },
     { name = "prompt-toolkit", specifier = ">=3.0.39" },
     { name = "tiktoken", specifier = ">=0.8.0" },
-    { name = "tomli", marker = "python_full_version < '3.12'", specifier = ">=2.0.1" },
+    { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.0.1" },
 ]
 
 [package.metadata.requires-dev]

@@ -12,7 +12,7 @@ classifiers = ["Development Status :: 3 - Alpha", "Environment :: Console", "Int
 
 requires-python = ">=3.10"
 dependencies = [
-  "tomli >=2.0.1; python_version <='3.11'",
+  "tomli >=2.0.1; python_version <'3.11'",
   "openai >=1.0.0",
   "tiktoken >=0.8.0",
   "prompt-toolkit >=3.0.39",
