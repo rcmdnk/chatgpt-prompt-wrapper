@@ -1,6 +1,6 @@
 [project]
 name = "chatgpt-prompt-wrapper"
-version = "0.1.1"
+version = "0.1.2"
 description = "CLI tool to wrap ChatGPT Python API."
 authors = [
   { name = "rcmdnk", email = "rcmdnk@gmail.com" }
