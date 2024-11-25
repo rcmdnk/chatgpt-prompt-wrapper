@@ -264,7 +264,7 @@ wheels = [
 
 [[package]]
 name = "chatgpt-prompt-wrapper"
-version = "0.1.2"
+version = "0.1.3"
 source = { editable = "." }
 dependencies = [
     { name = "conf-finder" },
@@ -286,7 +286,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "conf-finder", specifier = ">=0.2.0" },
+    { name = "conf-finder", specifier = ">=0.2.1" },
     { name = "inherit-docstring", specifier = ">=0.1.4" },
     { name = "openai", specifier = ">=1.0.0" },
     { name = "prompt-toolkit", specifier = ">=3.0.39" },
@@ -326,14 +326,14 @@ wheels = [
 
 [[package]]
 name = "conf-finder"
-version = "0.2.0"
+version = "0.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "gitpython" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4d/58/4e0dc3a85a940dacf65c8281e8b7162e31094db77b72a77fd988f9e16491/conf_finder-0.2.0.tar.gz", hash = "sha256:05f299ffec80ae0ce9f49322c792678f222bcaca5ffd6ec85a750b7865876a5e", size = 70356 }
+sdist = { url = "https://files.pythonhosted.org/packages/8a/7d/ae5ec0aaf7b0d5ebd8bae456ed136410bc750b4aafb10123342d775f81d1/conf_finder-0.2.1.tar.gz", hash = "sha256:7879eb66034fd0f01bc5509753266be24b87fc4f9ed1b7390ae58981bad82f8e", size = 70335 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/21/ac/592495b29e65862f7822e17a2e12a43e809c8c4616c8b98282685f97d15a/conf_finder-0.2.0-py3-none-any.whl", hash = "sha256:e29e7d98b7b2e7a02567aac894d64e6e0fd89f287db8a972698a9b8e75287b5b", size = 8459 },
+    { url = "https://files.pythonhosted.org/packages/81/37/e5e466253b3f6b20fff5a7fe3642efac1bb925898380b439695c52d89350/conf_finder-0.2.1-py3-none-any.whl", hash = "sha256:70b3c940f0b72c2fe23e90e89a72a76848c2d03fec79eea45782dfd10154f2ab", size = 8471 },
 ]
 
 [[package]]

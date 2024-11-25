@@ -1,6 +1,6 @@
 [project]
 name = "chatgpt-prompt-wrapper"
-version = "0.1.2"
+version = "0.1.3"
 description = "CLI tool to wrap ChatGPT Python API."
 authors = [
   { name = "rcmdnk", email = "rcmdnk@gmail.com" }
@@ -16,7 +16,7 @@ dependencies = [
   "openai >=1.0.0",
   "tiktoken >=0.8.0",
   "prompt-toolkit >=3.0.39",
-  "conf-finder >=0.2.0",
+  "conf-finder >=0.2.1",
   "inherit-docstring >=0.1.4",
 ]
 
