@@ -16,7 +16,7 @@ dependencies = [
   "openai >=1.0.0",
   "tiktoken >=0.8.0",
   "prompt-toolkit >=3.0.39",
-  "conf-finder >=0.1.3",
+  "conf-finder >=0.2.0",
   "inherit-docstring >=0.1.4",
 ]
 
