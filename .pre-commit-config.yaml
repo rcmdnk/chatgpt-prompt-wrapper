@@ -7,6 +7,7 @@ repos:
   - id: ruff-format-diff
   - id: ruff-format
   - id: mypy
+  - id: numpydoc-validation
   - id: shellcheck
   - id: mdformat-check
   - id: mdformat
