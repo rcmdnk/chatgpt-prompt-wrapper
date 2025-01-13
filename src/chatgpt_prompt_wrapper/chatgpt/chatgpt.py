@@ -28,7 +28,7 @@ class ChatGPT:
     context_window : int
         The maximum number of tokens the model can process at once, including both input and output. Set 0 to use the max values for the model.
     max_output_tokens : int
-        The maximum of output tokens for the completion. Set 0 to use the max values for the model.
+        The maximum of output tokens for the completion. Set 0 to use the max values for the model. Set 0 to use the max values for the model.
     min_output_tokens: int
         The minimum of output tokens for the completion. The input tokens must be less than conext_window - min_output_tokens (- a few tokens for the model to process).
     temperature: float

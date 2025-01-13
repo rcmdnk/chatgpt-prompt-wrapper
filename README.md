@@ -43,33 +43,34 @@ Alternatively, pass the key using the '-k' or '--key' argument in the command.
 
 ```
 $ cg help
-usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-t MAX_TOKENS] [-T MIN_MAX_TOKENS] [-l TOKENS_LIMIT] [--show] [--hide] [--multiline]
-          [--no_multiline] [--vi] [--emacs] [--show_cost]
+usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-w CONTEXT_WINDOW] [-o MAX_OUTPUT_TOKENS] [-O MIN_OUTPUT_TOKENS] [--show]
+          [--hide] [--multiline] [--no_multiline] [--vi] [--emacs] [--show_cost]
           subcommand [message ...]
 
 positional arguments:
   subcommand            Subcommand to run. Use 'commands' subcommand to list up available subcommands.
   message               Message to send to ChatGPT
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -k KEY, --key KEY     OpenAI API key.
-  -c CONF, --conf CONF  Path to the configuration toml file.
+  -c CONF, --conf CONF  Path to the configuration TOML file.
   -m MODEL, --model MODEL
                         ChatGPT Model to use.
-  -t MAX_TOKENS, --max_tokens MAX_TOKENS
-                        The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model
-                        minus prompt tokens.
-  -T MIN_MAX_TOKENS, --min_max_tokens MIN_MAX_TOKENS
-                        The minimum of max_tokens for the completion when max_tokens = 0.
-  -l TOKENS_LIMIT, --tokens_limit TOKENS_LIMIT
-                        The limit of the total tokens of the prompt and the completion. Set 0 to use the max values for the model.
-  --show                Show prompt for ask command.
-  --hide                Hide prompt for ask command.
-  --multiline           Use multiline input for chat command.
-  --no_multiline        Use single line input for chat command.
-  --vi                  Use vi mode at chat.
-  --emacs               Use emacs mode at chat.
+  -w CONTEXT_WINDOW, --context-window CONTEXT_WINDOW
+                        The maximum number of tokens the model can process at once, including both input and output. Set
+                        0 to use the max values for the model.
+  -o MAX_OUTPUT_TOKENS, --max-output-tokens MAX_OUTPUT_TOKENS
+                        The maximum of output tokens for the completion. Set 0 to use the max values for the model.
+  -O MIN_OUTPUT_TOKENS, --min-output-tokens MIN_OUTPUT_TOKENS
+                        The minimum of output tokens for the completion. The input tokens must be less than
+                        conext_window - min_output_tokens (- a few tokens for the model to process).
+  --show                Show prompt for `ask` mode.
+  --hide                Hide prompt for `ask` mode.
+  --multiline           Use multiline input for `chat` mode.
+  --no_multiline        Use single line input for `chat` mode.
+  --vi                  Use vi mode at `chat`.
+  --emacs               Use emacs mode at `chat`.
   --show_cost           Show cost used.
 ```
 
@@ -106,10 +107,10 @@ Available subcommands:
 :memo: In `chat` mode, all messages in the past, including answers from
 ChatGPT, will be sent each time you send a new message.
 
-The oldest message will be dropped when the total tokens (including the reserved tokens for the completion defined by `max_tokens` or `min_max_tokens`) exceeds the tokens limit (`tokens_limit` or the number of max tokens (-1) for the used model).
+The oldest message will be dropped when the total tokens exceeds the context_window.
 
 It means you will send almost the max length after a long conversation.
-Please keep the cost in mind. You may want to set `tokens_limit`.
+Please keep the cost in mind. You may want to set `context_window`.
 
 ### Discuss
 
@@ -161,15 +162,16 @@ The options for each table can be:
 - `mode`: Set `ask`, `chat` or `discuss`. (default is `ask` mode.)
 - `show_cost`: Set `true` to show the cost at the end of the command.
 - `model`: The model to use (default: "gpt-3.5-turbo").
-- `max_tokens`: The maximum number of tokens to generate in the chat completion. Set 0 to use the maximum values for the model. (default: 0)
-- `min_max_tokens`: The minimum of `max_tokens` for the completion when `max_tokens = 0`. (default: 200)
-- `tokens_limit`: The limit of the total tokens of the prompt and the completion. Set 0 to use the maximum values for the model. (default: 0)
+- `context_window`: The maximum number of tokens the model can process at once, including both input and output. Set 0 to use the max values for the model. (default: 0)
+- `max_output_tokens`:  The maximum of output tokens for the completion. Set 0 to use the max values for the model. Set 0 to use the max values for the model. (default: 0)
+- `min_output_tokens`: The minimum of output tokens for the completion. The input tokens must be less than conext_window - min_output_tokens (- a few tokens for the model to process). (default: 200)
 - `temperature`: Sampling temperature (0 ~ 2). (default: 1)
 - `top_p`: Probability (0 ~ 1) that the model will consider the top_p tokens. Do not set both temperature and top_p at the same time. (default: 1)
 - `presence_penalty`: The penalty for the model to return the same token (-2 ~ 2). (default: 0)
 - `frequency_penalty`: The penalty for the model to return the same token multiple times (-2 ~ 2). (default: 0)
 - Table of `alias`: Dictionary of role aliases. The default alias is: '`user' = 'User'`, `'system' = 'System'`, `'assistant' = 'Assistant'`.
-- `model_max_tokens`: Additional or updated model's max_token definitions.
+- `model_context_window`: The context window for each model.
+- `model_max_output_tokens`: The maximum output tokens for each model.
 - `price`: Additional or updated model's price definitions.
 - List of `messages`: Dictionary of message, which must have `role` and `content` (message text).
   - For `ask`, `chat` modes, `role` must be one of `system`, `user` and `assistant`
@@ -195,27 +197,27 @@ Here is a example configuration:
 [global]
 # Global configuration
 # `global` is special name and not a subcommand
-model = "gpt-4o-2024-08-06"
+model = "gpt-4o"
 
 # If model has no corresponding tiktoken's encoding, specify encoding_name
 # Such a "chatgpt-4o-latest" is not supported by tiktoken.encoding_for_model
 #encoding_name = "o200k_base"
 
-# Following model_max_tokens and prices are pre-defined in
+# Following context_window, max_output_tokens and prices are pre-defined in
 # https://github.com/rcmdnk/chatgpt-prompt-wrapper/blob/main/src/chatgpt_prompt_wrapper/chatgpt/chatgpt.py
 # If you find new model or price change, you can overwrite these variables in config as below.
 
 [global.model_context_window]
 # https://platform.openai.com/docs/models/
-"gpt-4o-2024-08-06" = 128000
+"gpt-4o" = 128000
 
-[global.model_max_tokens]
+[global.model_max_output_tokens]
 # https://platform.openai.com/docs/models/
-"gpt-4o-2024-08-06" = 16384
+"gpt-4o" = 16384
 
 [global.prices]
 # https://openai.com/api/pricing/
-"gpt-4o-2024-08-06" = [0.0025, 0.010]
+"gpt-4o" = [0.0025, 0.010]
 
 [test]
 # Example command to test the OpenAI API, taken from below.
