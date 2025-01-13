@@ -117,7 +117,7 @@ class Chat(Stream):
                 message_tokens = self.num_tokens_from_message(message)
                 if (
                     self.num_total_tokens(message_tokens)
-                    > self.tokens_limit - self.min_max_tokens
+                    > self.context_window - self.min_output_tokens
                 ):
                     self.log.warning("Input is too long, try shorter.\n")
                     continue
@@ -125,7 +125,7 @@ class Chat(Stream):
                 tokens.append(message_tokens)
                 while (
                     prompt_tokens := self.num_total_tokens(sum(tokens))
-                ) > self.tokens_limit - self.min_max_tokens:
+                ) > self.context_window - self.min_output_tokens:
                     messages = messages[1:]
                     tokens = tokens[1:]
                 cost += self.prices[self.model][0] * prompt_tokens / 1000.0

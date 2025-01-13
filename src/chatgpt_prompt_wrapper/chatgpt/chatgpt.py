@@ -25,12 +25,12 @@ class ChatGPT:
         OpenAI API key.
     model : str
         The model to use.
-    max_tokens : int
-        The maximum number of tokens to generate in the chat completion. Set 0 to use the max values for the model.
-    min_max_tokens: int
-        The minimum of max_tokens for the completion when max_tokens = 0.
-    tokens_limit : int
-        The limit of the total tokens of the prompt and the completion. Set 0 to use the max values for the model.
+    context_window : int
+        The maximum number of tokens the model can process at once, including both input and output. Set 0 to use the max values for the model.
+    max_output_tokens : int
+        The maximum of output tokens for the completion. Set 0 to use the max values for the model.
+    min_output_tokens: int
+        The minimum of output tokens for the completion. The input tokens must be less than conext_window - min_output_tokens (- a few tokens for the model to process).
     temperature: float
         Sampling temperature (0 ~ 2).
     top_p: float
@@ -45,8 +45,8 @@ class ChatGPT:
         The aliases of role names.
     model_context_window : dict[str, int]
         The context window for each model.
-    model_max_tokens: dict[str, int]
-        The maximum tokens for each model.
+    model_max_output_tokens: dict[str, int]
+        The maximum output tokens for each model.
     prices: dict[str, tuple[float, float]]
         The prices for each model.
     encoding_name: str
@@ -56,9 +56,9 @@ class ChatGPT:
 
     key: str
     model: str = "gpt-4o-mini"
-    max_tokens: int = 0
-    min_max_tokens: int = 200
-    tokens_limit: int = 0
+    context_window: int = 0
+    max_output_tokens: int = 0
+    min_output_tokens: int = 200
     temperature: float = 1
     top_p: float = 1
     presence_penalty: float = 0
@@ -78,15 +78,13 @@ class ChatGPT:
         },
     )
     model_context_window: dict[str, int] = field(default_factory=dict)
-    model_max_tokens: dict[str, int] = field(default_factory=dict)
+    model_max_output_tokens: dict[str, int] = field(default_factory=dict)
     prices: dict[str, tuple[float, float]] = field(default_factory=dict)
     encoding_name: str = ""
 
     def __post_init__(self) -> None:
         self.log = logging.getLogger(__name__)
         self.client = openai.OpenAI(api_key=self.key)
-        if self.max_tokens:
-            self.min_max_tokens = self.max_tokens
 
         self.ansi_colors = {
             "black": "30",
@@ -105,7 +103,10 @@ class ChatGPT:
                 k: v
                 for k, v in {
                     "gpt-4o": 128000,
+                    "chatgpt-4o-latest": 128000,
                     "gpt-4o-mini": 128000,
+                    "o1": 200000,
+                    "o1-mini": 128000,
                     "gpt-4-turbo": 128000,
                     "gpt-4": 8192,
                     "gpt-3.5-turbo": 16385,
@@ -113,17 +114,20 @@ class ChatGPT:
                 if k not in self.model_context_window
             },
         )
-        self.model_max_tokens.update(
+        self.model_max_output_tokens.update(
             {
                 k: v
                 for k, v in {
-                    "gpt-4o": 4096,
+                    "gpt-4o": 16384,
+                    "chatgpt-4o-latest": 16384,
                     "gpt-4o-mini": 16384,
+                    "o1": 100000,
+                    "o1-mini": 65536,
                     "gpt-4-turbo": 4096,
                     "gpt-4": 8192,
                     "gpt-3.5-turbo": 4096,
                 }.items()
-                if k not in self.model_max_tokens
+                if k not in self.model_max_output_tokens
             },
         )
 
@@ -133,11 +137,13 @@ class ChatGPT:
             {
                 k: v
                 for k, v in {
-                    "gpt-4o": (0.005, 0.015),
+                    "gpt-4o": (0.0025, 0.010),
                     "gpt-4o-mini": (0.00015, 0.0006),
+                    "o1": (0.015, 0.060),
+                    "o1-mini": (0.003, 0.012),
                     "gpt-4-turbo": (0.010, 0.030),
                     "gpt-4": (0.030, 0.060),
-                    "gpt-3.5-turbo": (0.003, 0.006),
+                    "gpt-3.5-turbo": (0.0005, 0.0015),
                 }.items()
                 if k not in self.prices
             },
@@ -152,12 +158,19 @@ class ChatGPT:
     def set_model(self, model: str) -> None:
         self.model = self.model
         # Total number of tokens must be maximum tokens for model - 1
-        if self.tokens_limit == 0:
-            self.tokens_limit = self.model_max_tokens[self.model] - 1
+        if self.context_window == 0:
+            self.context_window = self.model_context_window[self.model] - 1
         else:
-            self.tokens_limit = min(
-                self.tokens_limit,
-                self.model_max_tokens[self.model] - 1,
+            self.context_window = min(
+                self.context_window,
+                self.model_context_window[self.model] - 1,
+            )
+        if self.max_output_tokens == 0:
+            self.max_output_tokens = self.model_max_output_tokens[self.model]
+        else:
+            self.max_output_tokens = min(
+                self.max_output_tokens,
+                self.model_max_output_tokens[self.model],
             )
         self.prepare_tokens_checker()
 
@@ -187,9 +200,9 @@ class ChatGPT:
         return text
 
     def check_prompt_tokens(self, prompt_tokens: int) -> None:
-        if prompt_tokens + self.min_max_tokens > self.tokens_limit:
+        if prompt_tokens + self.min_output_tokens > self.context_window:
             raise ChatGPTPromptWrapperError(
-                f"Too much tokens: prompt tokens ({prompt_tokens}) + completion tokens ({self.min_max_tokens}) > tokens limit ({self.tokens_limit}).",
+                f"Too much tokens: prompt tokens ({prompt_tokens}) + completion tokens ({self.min_output_tokens}) > context_window ({self.context_window}).",
             )
 
     # Ref: https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
@@ -217,13 +230,11 @@ class ChatGPT:
             num_tokens += self.num_tokens_from_message(message)
         return self.num_total_tokens(num_tokens)
 
-    def get_max_tokens(self, messages: Messages) -> int:
+    def get_max_completion_tokens(self, messages: Messages) -> int:
         prompt_tokens = self.num_tokens_from_messages(messages)
         self.check_prompt_tokens(prompt_tokens)
-        remain_tokens = self.tokens_limit - prompt_tokens
-        if self.max_tokens:
-            return min(self.max_tokens, remain_tokens)
-        return max(self.min_max_tokens, remain_tokens)
+        remain_tokens = self.context_window - prompt_tokens
+        return min(remain_tokens, self.max_output_tokens)
 
     def fix_messages(self, messages: Messages) -> Messages:
         if "gpt-3.5" in self.model:
@@ -255,12 +266,12 @@ class ChatGPT:
         messages: Messages,
         stream: bool = False,
     ) -> ChatCompletion | openai.Stream[ChatCompletionChunk]:
-        max_tokens = self.get_max_tokens(messages)
+        max_completion_tokens = self.get_max_completion_tokens(messages)
 
         return self.client.chat.completions.create(
             model=self.model,
             messages=messages,  # type: ignore
-            max_tokens=max_tokens,
+            max_completion_tokens=max_completion_tokens,
             temperature=self.temperature,
             top_p=self.top_p,
             presence_penalty=self.presence_penalty,

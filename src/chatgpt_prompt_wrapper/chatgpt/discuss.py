@@ -126,7 +126,7 @@ class Discuss(Stream):
 
                 while (
                     prompt_tokens := self.num_total_tokens(sum(tokens1))
-                ) > self.tokens_limit - self.min_max_tokens:
+                ) > self.context_window - self.min_output_tokens:
                     gpt1_messages = gpt1_messages[:2] + gpt1_messages[3:]
                     tokens1 = tokens1[:2] + tokens1[3:]
                 cost += self.prices[self.model][0] * prompt_tokens / 1000.0
@@ -160,7 +160,7 @@ class Discuss(Stream):
                 _ = input()
                 while (
                     prompt_tokens := self.num_total_tokens(sum(tokens2))
-                ) > self.tokens_limit - self.min_max_tokens:
+                ) > self.context_window - self.min_output_tokens:
                     gpt2_messages = gpt2_messages[:2] + gpt2_messages[3:]
                     tokens2 = tokens2[:2] + tokens2[3:]
                 cost += self.prices[self.model][0] * prompt_tokens / 1000.0

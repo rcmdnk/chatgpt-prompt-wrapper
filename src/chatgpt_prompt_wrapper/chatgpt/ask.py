@@ -52,10 +52,10 @@ class Ask(ChatGPT):
         if finish_reason == "stop":
             pass
         elif finish_reason == "length":
-            if self.max_tokens:
-                reason = f"max_tokens for completion = {self.max_tokens}."
+            if self.max_output_tokens:
+                reason = f"max_output_tokens for completion = {self.max_output_tokens}."
             else:
-                reason = f"max_tokens for completion = {self.get_max_tokens(messages)} (prompt tokens: {prompt_tokens}, tokens limit: {self.tokens_limit}, minimum of max tokens: {self.min_max_tokens})."
+                reason = f"max_output_tokens for completion = {self.get_max_completion_tokens(messages)} (prompt tokens: {prompt_tokens}, context_window: {self.context_window}, minimum of output tokens: {self.min_output_tokens})."
             self.log.warning(
                 f"The reply was truncated due to the tokens limit: {reason}",
             )
