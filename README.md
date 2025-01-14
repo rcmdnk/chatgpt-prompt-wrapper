@@ -163,7 +163,7 @@ The options for each table can be:
 - `show_cost`: Set `true` to show the cost at the end of the command.
 - `model`: The model to use (default: "gpt-3.5-turbo").
 - `context_window`: The maximum number of tokens the model can process at once, including both input and output. Set 0 to use the max values for the model. (default: 0)
-- `max_output_tokens`:  The maximum of output tokens for the completion. Set 0 to use the max values for the model. Set 0 to use the max values for the model. (default: 0)
+- `max_output_tokens`: The maximum of output tokens for the completion. Set 0 to use the max values for the model. Set 0 to use the max values for the model. (default: 0)
 - `min_output_tokens`: The minimum of output tokens for the completion. The input tokens must be less than conext_window - min_output_tokens (- a few tokens for the model to process). (default: 200)
 - `temperature`: Sampling temperature (0 ~ 2). (default: 1)
 - `top_p`: Probability (0 ~ 1) that the model will consider the top_p tokens. Do not set both temperature and top_p at the same time. (default: 1)
