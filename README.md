@@ -25,6 +25,8 @@ $ pip3 install chatgpt-prompt-wrapper
 
 ## Preparation
 
+### For OpenAI API
+
 To get an OpenAI API key, go to [Account API Keys - OpenAI API](https://platform.openai.com/account/api-keys).
 
 Set it as the environment variable `OPENAI_API_KEY`.
@@ -35,16 +37,34 @@ To load the variable when you start the terminal, write it in **.bashrc** or **.
 export OPENAI_API_KEY="sk-..."
 ```
 
-Alternatively, pass the key using the '-k' or '--key' argument in the command.
+Alternatively, pass the key using the '-k' or '--key' argument in the command,
+or set `KEY` in the configuration file.
+
+### For other APIs
+
+You can use other APIs by setting the base URL and the key in the configuration file.
+
+To use DeepSeek API, give the base URL and the key by options like:
+
+```
+$ cg --model deepseek-chat --base-url https://api.deepseek.com/v1 --key "<DEEPSEEK_API_KEY>" ...
+```
+
+You can also use ollama local API like:
+
+```
+$ cg --model llama3.2 --base-url http://localhost:11434/v1/ ...
+```
+
+You can set them in the configuration file by `MODEL`, `BASE_URL` and `KEY` keywords.
 
 ## Usage
 
 ### Command-line interface Help
 
 ```
-$ cg help
-usage: cg [-h] [-k KEY] [-c CONF] [-m MODEL] [-w CONTEXT_WINDOW] [-o MAX_OUTPUT_TOKENS] [-O MIN_OUTPUT_TOKENS] [--show]
-          [--hide] [--multiline] [--no_multiline] [--vi] [--emacs] [--show_cost]
+usage: cg [-h] [-c CONF] [-k KEY] [-b BASE_URL] [-m MODEL] [-w CONTEXT_WINDOW] [-o MAX_OUTPUT_TOKENS]
+          [-O MIN_OUTPUT_TOKENS] [--show] [--hide] [--multiline] [--no_multiline] [--vi] [--emacs] [--show_cost]
           subcommand [message ...]
 
 positional arguments:
@@ -53,13 +73,15 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  -k KEY, --key KEY     OpenAI API key.
   -c CONF, --conf CONF  Path to the configuration TOML file.
+  -k KEY, --key KEY     API key.
+  -b BASE_URL, --base-url BASE_URL
+                        API base URL.
   -m MODEL, --model MODEL
                         ChatGPT Model to use.
   -w CONTEXT_WINDOW, --context-window CONTEXT_WINDOW
-                        The maximum number of tokens the model can process at once, including both input and output. Set
-                        0 to use the max values for the model.
+                        The maximum number of tokens the model can process at once, including both input and output.
+                        Set 0 to use the max values for the model.
   -o MAX_OUTPUT_TOKENS, --max-output-tokens MAX_OUTPUT_TOKENS
                         The maximum of output tokens for the completion. Set 0 to use the max values for the model.
   -O MIN_OUTPUT_TOKENS, --min-output-tokens MIN_OUTPUT_TOKENS
