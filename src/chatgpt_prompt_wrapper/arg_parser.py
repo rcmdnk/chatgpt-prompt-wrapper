@@ -25,17 +25,24 @@ def get_arg_parser() -> ArgumentParser:
         nargs="*",
     )
     arg_parser.add_argument(
-        "-k",
-        "--key",
-        help="OpenAI API key.",
-        type=str,
-        default=os.environ.get("OPENAI_API_KEY", ""),
-    )
-    arg_parser.add_argument(
         "-c",
         "--conf",
         help="Path to the configuration TOML file.",
         type=str,
+    )
+    arg_parser.add_argument(
+        "-k",
+        "--key",
+        help="API key.",
+        type=str,
+        default=os.environ.get("OPENAI_API_KEY", ""),
+    )
+    arg_parser.add_argument(
+        "-b",
+        "--base-url",
+        help="API base URL.",
+        type=str,
+        default=os.environ.get("OPENAI_API_BASE_URL", "https://api.openai.com"),
     )
     arg_parser.add_argument(
         "-m",

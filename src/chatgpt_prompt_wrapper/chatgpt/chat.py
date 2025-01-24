@@ -128,20 +128,21 @@ class Chat(Stream):
                 ) > self.context_window - self.min_output_tokens:
                     messages = messages[1:]
                     tokens = tokens[1:]
-                cost += self.prices[self.model][0] * prompt_tokens / 1000.0
                 response = self.completion_stream(messages)
                 new_message = self.show_stream(response, max_size)
                 self.log.info("\n")
                 messages.append(new_message)
                 tokens.append(self.num_tokens_from_message(new_message))
-                cost += (
-                    self.prices[self.model][1]
-                    * self.num_tokens_from_message(
-                        new_message,
-                        only_content=True,
+                if self.model in self.prices:
+                    cost += (
+                        self.prices[self.model][0] * prompt_tokens / 1000.0
+                        + self.prices[self.model][1]
+                        * self.num_tokens_from_message(
+                            new_message,
+                            only_content=True,
+                        )
+                        / 1000.0
                     )
-                    / 1000.0
-                )
         except KeyboardInterrupt:
             self.log.info("\n")
         return max_size, cost

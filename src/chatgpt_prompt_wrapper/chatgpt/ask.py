@@ -80,7 +80,9 @@ class Ask(ChatGPT):
             answer = ""
         self.log.info(answer)
 
-        return (
-            self.prices[self.model][0] * prompt_tokens / 1000.0
+        if self.model in self.prices:
+            return (self.prices[self.model][0] * prompt_tokens / 1000.0
             + self.prices[self.model][1] * completion_tokens / 1000.0
-        )
+                    )
+        else:
+            return 0

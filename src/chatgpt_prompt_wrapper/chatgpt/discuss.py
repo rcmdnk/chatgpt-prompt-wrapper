@@ -129,7 +129,8 @@ class Discuss(Stream):
                 ) > self.context_window - self.min_output_tokens:
                     gpt1_messages = gpt1_messages[:2] + gpt1_messages[3:]
                     tokens1 = tokens1[:2] + tokens1[3:]
-                cost += self.prices[self.model][0] * prompt_tokens / 1000.0
+                if self.model in self.prices:
+                    cost += self.prices[self.model][0] * prompt_tokens / 1000.0
                 response = self.completion_stream(gpt1_messages)
 
                 new_message = self.show_stream(
@@ -148,14 +149,15 @@ class Discuss(Stream):
                 tokens = self.num_tokens_from_message(user_message)
                 tokens2.append(tokens)
 
-                cost += (
-                    self.prices[self.model][1]
-                    * self.num_tokens_from_message(
-                        new_message,
-                        only_content=True,
+                if self.model in self.prices:
+                    cost += (
+                        self.prices[self.model][1]
+                        * self.num_tokens_from_message(
+                            new_message,
+                            only_content=True,
+                        )
+                        / 1000.0
                     )
-                    / 1000.0
-                )
 
                 _ = input()
                 while (
@@ -163,7 +165,8 @@ class Discuss(Stream):
                 ) > self.context_window - self.min_output_tokens:
                     gpt2_messages = gpt2_messages[:2] + gpt2_messages[3:]
                     tokens2 = tokens2[:2] + tokens2[3:]
-                cost += self.prices[self.model][0] * prompt_tokens / 1000.0
+                if self.model in self.prices:
+                    cost += self.prices[self.model][0] * prompt_tokens / 1000.0
                 response = self.completion_stream(gpt2_messages)
                 new_message = self.show_stream(
                     response,
@@ -181,14 +184,15 @@ class Discuss(Stream):
                 tokens = self.num_tokens_from_message(user_message)
                 tokens1.append(tokens)
 
-                cost += (
-                    self.prices[self.model][1]
-                    * self.num_tokens_from_message(
-                        new_message,
-                        only_content=True,
+                if self.model in self.prices:
+                    cost += (
+                        self.prices[self.model][1]
+                        * self.num_tokens_from_message(
+                            new_message,
+                            only_content=True,
+                        )
+                        / 1000.0
                     )
-                    / 1000.0
-                )
         except KeyboardInterrupt:
             self.log.info("\n")
         return max_size, cost

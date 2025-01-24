@@ -23,6 +23,8 @@ class ChatGPT:
     ----------
     key : str
         OpenAI API key.
+    base_url : str
+        The base URL for the API.
     model : str
         The model to use.
     context_window : int
@@ -54,7 +56,8 @@ class ChatGPT:
 
     """
 
-    key: str
+    key: str = ""
+    base_url: str = "https://api.openai.com/v1"
     model: str = "gpt-4o-mini"
     context_window: int = 0
     max_output_tokens: int = 0
@@ -84,7 +87,7 @@ class ChatGPT:
 
     def __post_init__(self) -> None:
         self.log = logging.getLogger(__name__)
-        self.client = openai.OpenAI(api_key=self.key)
+        self.client = openai.OpenAI(base_url=self.base_url, api_key=self.key)
 
         self.ansi_colors = {
             "black": "30",
@@ -158,24 +161,29 @@ class ChatGPT:
     def set_model(self, model: str) -> None:
         self.model = self.model
         # Total number of tokens must be maximum tokens for model - 1
-        if self.context_window == 0:
-            self.context_window = self.model_context_window[self.model] - 1
-        else:
-            self.context_window = min(
-                self.context_window,
-                self.model_context_window[self.model] - 1,
-            )
-        if self.max_output_tokens == 0:
-            self.max_output_tokens = self.model_max_output_tokens[self.model]
-        else:
-            self.max_output_tokens = min(
-                self.max_output_tokens,
-                self.model_max_output_tokens[self.model],
-            )
+        if self.model in self.model_context_window and self.model in self.model_max_output_tokens:
+            if self.context_window == 0:
+                self.context_window = self.model_context_window[self.model] - 1
+            else:
+                self.context_window = min(
+                    self.context_window,
+                    self.model_context_window[self.model] - 1,
+                )
+            if self.max_output_tokens == 0:
+                self.max_output_tokens = self.model_max_output_tokens[self.model]
+            else:
+                self.max_output_tokens = min(
+                    self.max_output_tokens,
+                    self.model_max_output_tokens[self.model],
+                )
         self.prepare_tokens_checker()
 
     def prepare_tokens_checker(self) -> None:
         # https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken
+        if self.context_window == 0:
+            self.encoding = None
+            return
+
         if self.encoding_name:
             self.encoding = tiktoken.get_encoding(self.encoding_name)
         else:
@@ -231,6 +239,8 @@ class ChatGPT:
         return self.num_total_tokens(num_tokens)
 
     def get_max_completion_tokens(self, messages: Messages) -> int:
+        if self.context_window == 0:
+            return 0
         prompt_tokens = self.num_tokens_from_messages(messages)
         self.check_prompt_tokens(prompt_tokens)
         remain_tokens = self.context_window - prompt_tokens
@@ -268,16 +278,18 @@ class ChatGPT:
     ) -> ChatCompletion | openai.Stream[ChatCompletionChunk]:
         max_completion_tokens = self.get_max_completion_tokens(messages)
 
-        return self.client.chat.completions.create(
-            model=self.model,
-            messages=messages,  # type: ignore
-            max_completion_tokens=max_completion_tokens,
-            temperature=self.temperature,
-            top_p=self.top_p,
-            presence_penalty=self.presence_penalty,
-            frequency_penalty=self.frequency_penalty,
-            stream=stream,
-        )
+        params = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": self.temperature,
+            "top_p": self.top_p,
+            "presence_penalty": self.presence_penalty,
+            "frequency_penalty": self.frequency_penalty,
+            "stream": stream,
+        }
+        if max_completion_tokens:
+            params["max_completion_tokens"] = max_completion_tokens
+        return self.client.chat.completions.create(**params)
 
     def completion_message(self, messages: Messages) -> ChatCompletion:
         return cast(ChatCompletion, self.completion(messages, stream=False))
