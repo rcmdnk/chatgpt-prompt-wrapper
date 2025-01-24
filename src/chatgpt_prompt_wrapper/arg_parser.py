@@ -42,7 +42,9 @@ def get_arg_parser() -> ArgumentParser:
         "--base-url",
         help="API base URL.",
         type=str,
-        default=os.environ.get("OPENAI_API_BASE_URL", "https://api.openai.com"),
+        default=os.environ.get(
+            "OPENAI_API_BASE_URL", "https://api.openai.com"
+        ),
     )
     arg_parser.add_argument(
         "-m",

@@ -161,7 +161,10 @@ class ChatGPT:
     def set_model(self, model: str) -> None:
         self.model = self.model
         # Total number of tokens must be maximum tokens for model - 1
-        if self.model in self.model_context_window and self.model in self.model_max_output_tokens:
+        if (
+            self.model in self.model_context_window
+            and self.model in self.model_max_output_tokens
+        ):
             if self.context_window == 0:
                 self.context_window = self.model_context_window[self.model] - 1
             else:
@@ -170,7 +173,9 @@ class ChatGPT:
                     self.model_context_window[self.model] - 1,
                 )
             if self.max_output_tokens == 0:
-                self.max_output_tokens = self.model_max_output_tokens[self.model]
+                self.max_output_tokens = self.model_max_output_tokens[
+                    self.model
+                ]
             else:
                 self.max_output_tokens = min(
                     self.max_output_tokens,
@@ -219,6 +224,9 @@ class ChatGPT:
         message: Message,
         only_content: bool = False,
     ) -> int:
+        if self.encoding is None:
+            return 0
+
         if only_content:
             return len(self.encoding.encode(message["content"]))
 
@@ -289,7 +297,7 @@ class ChatGPT:
         }
         if max_completion_tokens:
             params["max_completion_tokens"] = max_completion_tokens
-        return self.client.chat.completions.create(**params)
+        return self.client.chat.completions.create(**params)  # type: ignore[call-overload]
 
     def completion_message(self, messages: Messages) -> ChatCompletion:
         return cast(ChatCompletion, self.completion(messages, stream=False))

@@ -36,7 +36,7 @@ class Ask(ChatGPT):
             completion_tokens = 0
         return prompt_tokens, completion_tokens
 
-    def run(self, messages: Messages) -> float:
+    def run(self, messages: Messages) -> float:  # noqa: C901
         messages = self.fix_messages(messages)
         max_size = max(
             10,
@@ -81,8 +81,9 @@ class Ask(ChatGPT):
         self.log.info(answer)
 
         if self.model in self.prices:
-            return (self.prices[self.model][0] * prompt_tokens / 1000.0
-            + self.prices[self.model][1] * completion_tokens / 1000.0
-                    )
+            return (
+                self.prices[self.model][0] * prompt_tokens / 1000.0
+                + self.prices[self.model][1] * completion_tokens / 1000.0
+            )
         else:
             return 0
