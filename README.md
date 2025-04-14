@@ -1,9 +1,9 @@
-commit: [7840605f50395f2551278486b943e35ade871a73](https://github.com/rcmdnk/chatgpt-prompt-wrapper/tree/7840605f50395f2551278486b943e35ade871a73)
+commit: [87b9ed69831786b29f2a2c46ab3dca3c946e9c5f](https://github.com/rcmdnk/chatgpt-prompt-wrapper/tree/87b9ed69831786b29f2a2c46ab3dca3c946e9c5f)
 
 condition: branch=main, os=ubuntu-latest, python_version=3.9
 
-[![test](https://github.com/rcmdnk/chatgpt-prompt-wrapper/actions/workflows/test.yml/badge.svg)](https://github.com/rcmdnk/chatgpt-prompt-wrapper/actions/runs/14320288419)
+[![test](https://github.com/rcmdnk/chatgpt-prompt-wrapper/actions/workflows/test.yml/badge.svg)](https://github.com/rcmdnk/chatgpt-prompt-wrapper/actions/runs/14457265609)
 | Tests | Skipped | Failures | Errors | Time |
 | ----- | ------- | -------- | -------- | ------------------ |
-| 4 | 0 :zzz: | 0 :x: | 0 :fire: | 2.378s :stopwatch: |
+| 4 | 0 :zzz: | 0 :x: | 0 :fire: | 2.467s :stopwatch: |
 
