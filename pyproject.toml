@@ -8,7 +8,7 @@ authors = [
 readme = "README.md"
 license = "apache-2.0"
 keywords = ["chat", "gpt", "openai", "cli"]
-classifiers = ["Development Status :: 3 - Alpha", "Environment :: Console", "Intended Audience :: Developers", "Intended Audience :: End Users/Desktop", "License :: OSI Approved :: Apache Software License", "Natural Language :: English", "Operating System :: OS Independent", "Programming Language :: Python :: 3.9", "Programming Language :: Python :: 3.10", "Programming Language :: Python :: 3.11", "Programming Language :: Python :: 3.12", "Topic :: Communications :: Chat", "Topic :: Utilities"]
+classifiers = ["Development Status :: 3 - Alpha", "Environment :: Console", "Intended Audience :: Developers", "Intended Audience :: End Users/Desktop", "License :: OSI Approved :: Apache Software License", "Natural Language :: English", "Operating System :: OS Independent", "Programming Language :: Python :: 3.9", "Programming Language :: Python :: 3.10", "Programming Language :: Python :: 3.11", "Programming Language :: Python :: 3.12", "Programming Language :: Python :: 3.13", "Programming Language :: Python :: 3.14", "Topic :: Communications :: Chat", "Topic :: Utilities"]
 
 requires-python = ">=3.9"
 dependencies = [
@@ -32,7 +32,7 @@ dev = [
     "pytest-cov >=6.0.0",
     "pytest-xdist >=3.2.1",
     "pytest-benchmark >=5.0.0",
-    "pyproject-pre-commit[ruff] >=0.3.4",
+    "pyproject-pre-commit >=0.6.1",
 ]
 
 [project.scripts]
@@ -90,15 +90,6 @@ max-complexity = 10
 
 [tool.ruff.format]
 docstring-code-format = true
-
-[tool.mypy]
-files = ["src/**/*.py"]
-strict = true
-warn_return_any = false
-ignore_missing_imports = true
-scripts_are_modules = true
-install_types = true
-non_interactive = true
 
 [tool.numpydoc_validation]
 checks = [

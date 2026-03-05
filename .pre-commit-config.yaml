@@ -6,7 +6,7 @@ repos:
   - id: ruff-lint
   - id: ruff-format-diff
   - id: ruff-format
-  - id: mypy
+  - id: ty
   - id: numpydoc-validation
   - id: shellcheck
   - id: mdformat-check
@@ -15,7 +15,7 @@ repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v6.0.0
   hooks:
-    - id: check-byte-order-marker
+    - id: fix-byte-order-marker
     - id: check-yaml
     - id: check-json
     - id: check-toml
