@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib
 import inspect
 import json
 import sys
@@ -18,9 +19,9 @@ from .cmds import commands, cost, init
 from .log_formatter import get_logger
 
 if sys.version_info >= (3, 11):
-    import tomllib
+    tomllib = importlib.import_module("tomllib")
 else:
-    import tomli as tomllib
+    tomllib = importlib.import_module("tomli")
 
 
 @dataclass

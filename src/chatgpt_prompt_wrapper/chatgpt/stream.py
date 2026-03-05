@@ -9,7 +9,7 @@ from inherit_docstring import inherit_docstring
 from .chatgpt import ChatGPT, Messages
 
 if TYPE_CHECKING:
-    import openai.Stream
+    from openai import Stream as OpenAIStream
     from openai.types.chat import ChatCompletionChunk
 
 
@@ -40,7 +40,7 @@ class Stream(ChatGPT):
 
     def show_stream(
         self,
-        response: openai.Stream[ChatCompletionChunk],
+        response: OpenAIStream[ChatCompletionChunk],
         max_size: int,
         name: str = "",
     ) -> dict[str, str]:

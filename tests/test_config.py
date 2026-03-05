@@ -1,7 +1,10 @@
-try:
-    import tomllib
-except ModuleNotFoundError:
-    import tomli as tomllib
+import importlib
+import sys
+
+if sys.version_info >= (3, 11):
+    tomllib = importlib.import_module("tomllib")
+else:
+    tomllib = importlib.import_module("tomli")
 
 
 def test_example_config(conf_file):
