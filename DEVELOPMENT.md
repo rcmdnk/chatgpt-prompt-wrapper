@@ -8,17 +8,17 @@ To install uv, refer to [the installation page](https://docs.astral.sh/uv/gettin
 
 ## pre-commit
 
-To check codes at the commit, use [pre-commit](https://pre-commit.com/).
+To check codes at the commit, use prek.
 
-`pre-commit` command will be installed in the uv environment.
+`prek` command will be installed in the uv environment.
 
 First, run:
 
 ```
-$ pre-commit install
+$ prek install
 ```
 
-Then `pre-commit` will be run at the commit.
+Then `prek` will be run at the commit.
 
 Sometimes, you may want to skip the check. In that case, run:
 
@@ -26,10 +26,10 @@ Sometimes, you may want to skip the check. In that case, run:
 $ git commit --no-verify
 ```
 
-You can run `pre-commit` on entire repository manually:
+You can run `prek` on entire repository manually:
 
 ```
-$ pre-commit run -a
+$ prek run -a
 ```
 
 ## pytest
@@ -58,7 +58,7 @@ by [GitHub Actions](https://github.co.jp/features/actions).
 
 The job runs at the Pull Request, too.
 
-It checks codes with `pre-commit` and runs tests with `pytest`.
+It checks codes with `prek` and runs tests with `pytest`.
 It also makes a test coverage report and uploads it to [the coverage branch](https://github.com/rcmdnk/chatgpt-prompt-wrapper/tree/coverage).
 
 You can see the test status as a badge in the README.
